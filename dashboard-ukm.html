@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard UKM - Sistem Transparansi Dana UKM</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Sistem Transparansi Dana</h2>
+                <div class="role-badge">UKM - <span class="ukm-name">U2M</span></div>
+                <p class="current-date" style="color: rgba(255,255,255,0.7); margin-top: 10px; font-size: 14px;"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard-ukm.html" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="pengajuan-dana.html"><i class="fas fa-hand-holding-usd"></i> Pengajuan Dana</a></li>
+                    <li><a href="laporan-keuangan.html"><i class="fas fa-file-invoice-dollar"></i> Laporan Keuangan</a></li>
+                    <li><a href="upload-bukti.html"><i class="fas fa-upload"></i> Upload Bukti Transaksi</a></li>
+                    <li><a href="lpj-dan-k.html"><i class="fas fa-clipboard-check"></i> LPJ & K</a></li>
+                </ul>
+            </nav>
+            
+            <button class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+            </button>
+        </aside>
+                
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="user-info">
+                    <div class="user-avatar">KU</div>
+                    <div class="user-details">
+                        <h3 class="user-name">Ketua UKM U2M</h3>
+                        <p class="user-role">UKM - Unit Usaha Mahasiswa</p>
+                    </div>
+                </div>
+                
+                <div class="page-title">
+                    <h1>Dashboard UKM</h1>
+                    <p>Selamat datang di Sistem Transparansi Dana UKM ITB STIKOM Bali</p>
+                </div>
+            </div>
+            
+            <!-- Financial Summary Cards -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Total Dana</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">Rp 15.250.000</div>
+                    <p class="card-desc">Dana keseluruhan yang tersedia untuk UKM U2M</p>
+                </div>
+                
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3>Dana Terpakai</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">Rp 9.750.000</div>
+                    <p class="card-desc">Total dana yang telah digunakan untuk kegiatan</p>
+                </div>
+                
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3>Sisa Dana</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-piggy-bank"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">Rp 5.500.000</div>
+                    <p class="card-desc">Sisa dana yang dapat digunakan untuk kegiatan mendatang</p>
+                </div>
+            </div>
+            
+            <!-- Recent Activity & Transactions -->
+            <div class="table-container">
+                <h3>Aktivitas Terbaru</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Aktivitas</th>
+                                <th>Status</th>
+                                <th>Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>25 Okt 2023</td>
+                                <td>Pengajuan Proposal "Workshop Kewirausahaan"</td>
+                                <td><span class="status status-approved">Disetujui</span></td>
+                                <td>Oleh Pembina UKM</td>
+                            </tr>
+                            <tr>
+                                <td>22 Okt 2023</td>
+                                <td>Upload Bukti Pembelian Alat Tulis</td>
+                                <td><span class="status status-pending">Menunggu Verifikasi</span></td>
+                                <td>Rp 150.000</td>
+                            </tr>
+                            <tr>
+                                <td>20 Okt 2023</td>
+                                <td>Pengajuan Proposal "Bazar Produk UKM"</td>
+                                <td><span class="status status-pending">Menunggu Persetujuan</span></td>
+                                <td>Rp 2.500.000</td>
+                            </tr>
+                            <tr>
+                                <td>18 Okt 2023</td>
+                                <td>Upload Bukti Transportasi Kegiatan</td>
+                                <td><span class="status status-rejected">Ditolak</span></td>
+                                <td>Lampiran tidak lengkap</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Pengajuan Dana</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-hand-holding-usd"></i>
+                        </div>
+                    </div>
+                    <p class="card-desc">Ajukan permohonan dana untuk kegiatan UKM U2M yang akan dilaksanakan</p>
+                    <div class="form-actions" style="margin-top: 20px;">
+                        <a href="pengajuan-dana.html" class="btn btn-primary">Ajukan Sekarang</a>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>LPJ & K</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                    </div>
+                    <p class="card-desc">Arsipkan laporan pertanggungjawaban kegiatan dan keuangan UKM</p>
+                    <div class="form-actions" style="margin-top: 20px;">
+                        <a href="lpj-dan-k.html" class="btn btn-primary">Arsipkan Sekarang</a>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Upload Bukti Transaksi</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                    </div>
+                    <p class="card-desc">Unggah bukti transaksi untuk pertanggungjawaban keuangan</p>
+                    <div class="form-actions" style="margin-top: 20px;">
+                        <a href="upload-bukti.html" class="btn btn-primary">Upload Sekarang</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        // Menampilkan tanggal hari ini di sidebar
+        const currentDateElement = document.querySelector('.current-date');
+        if (currentDateElement) {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            currentDateElement.textContent = now.toLocaleDateString('id-ID', options);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bukti Transaksi - Sistem Transparansi Dana UKM</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Sistem Transparansi Dana</h2>
+                <div class="role-badge">Admin Keuangan</div>
+                <p class="current-date" style="color: rgba(255,255,255,0.7); margin-top: 10px; font-size: 14px;"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard-admin.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="tinjau-proposal.html"><i class="fas fa-file-contract"></i> Tinjau Proposal</a></li>
+                    <li><a href="bukti-transaksi-admin.html" class="active"><i class="fas fa-receipt"></i> Bukti Transaksi</a></li>
+                    <li><a href="approval-admin.html"><i class="fas fa-check-double"></i> Menu Approval</a></li>
+                    <li><a href="audit-admin.html"><i class="fas fa-search"></i> Menu Audit</a></li>
+                </ul>
+            </nav>
+            
+            <button class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+            </button>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="user-info">
+                    <div class="user-avatar">AD</div>
+                    <div class="user-details">
+                        <h3 class="user-name">Admin Keuangan</h3>
+                        <p class="user-role">Admin Keuangan - ITB STIKOM Bali</p>
+                    </div>
+                </div>
+                
+                <div class="page-title">
+                    <h1>Verifikasi Bukti Transaksi</h1>
+                    <p>Review dan validasi bukti transaksi dari seluruh UKM</p>
+                </div>
+            </div>
+            
+            <!-- Filter -->
+            <div class="table-container" style="margin-bottom: 20px;">
+                <h3>Filter Transaksi</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="filterUkm">UKM</label>
+                        <select id="filterUkm">
+                            <option value="all">Semua UKM</option>
+                            <option value="u2m">U2M</option>
+                            <option value="fotografi">UKM Fotografi</option>
+                            <option value="teater">UKM Teater</option>
+                            <option value="robotika">UKM Robotika</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filterStatus">Status</label>
+                        <select id="filterStatus">
+                            <option value="all">Semua Status</option>
+                            <option value="pending">Menunggu Verifikasi</option>
+                            <option value="verified">Terverifikasi</option>
+                            <option value="rejected">Ditolak</option>
+                            <option value="suspicious">Dicurigai</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filterDate">Periode</label>
+                        <input type="date" id="filterDate">
+                    </div>
+                    <div class="form-group" style="align-self: flex-end;">
+                        <button class="btn btn-primary" id="applyFilter">
+                            <i class="fas fa-filter"></i> Filter
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stats -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Total Transaksi</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">124</div>
+                    <p class="card-desc">Tahun 2023</p>
+                </div>
+                
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3>Menunggu Verifikasi</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">24</div>
+                    <p class="card-desc">Perlu tindakan segera</p>
+                </div>
+                
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3>Terverifikasi</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">98</div>
+                    <p class="card-desc">Transaksi valid</p>
+                </div>
+                
+                <div class="card card-danger">
+                    <div class="card-header">
+                        <h3>Ditandai Curang</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">7</div>
+                    <p class="card-desc">Perlu investigasi</p>
+                </div>
+            </div>
+            
+            <!-- Transaction List -->
+            <div class="table-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Daftar Transaksi</h3>
+                    <div>
+                        <button class="btn btn-secondary" id="exportTransactions">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                        <button class="btn btn-success" id="refreshTransactions">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Transaksi</th>
+                                <th>UKM</th>
+                                <th>Keterangan</th>
+                                <th>Tanggal</th>
+                                <th>Jumlah</th>
+                                <th>Proposal Terkait</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>TRX007</td>
+                                <td><strong>U2M</strong></td>
+                                <td>Penggantian peral produksi</td>
+                                <td>30 Okt 2023</td>
+                                <td>Rp 1.800.000</td>
+                                <td>PROP002</td>
+                                <td><span class="status status-pending">Menunggu</span></td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm verify-transaction" data-id="TRX007">
+                                        <i class="fas fa-search"></i> Verifikasi
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>TRX045</td>
+                                <td>UKM Teater</td>
+                                <td>Pembelian properti panggung</td>
+                                <td>29 Okt 2023</td>
+                                <td>Rp 850.000</td>
+                                <td>PROP008</td>
+                                <td><span class="status status-approved">Terverifikasi</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm view-transaction" data-id="TRX045">
+                                        <i class="fas fa-eye"></i> Lihat
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr style="background-color: #fff8e1;">
+                                <td>TRX102</td>
+                                <td>UKM Robotika</td>
+                                <td>Pembelian komponen robot</td>
+                                <td>29 Okt 2023</td>
+                                <td>Rp 950.000</td>
+                                <td>TIDAK SESUAI</td>
+                                <td><span class="status status-danger">Ditolak</span></td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm review-transaction" data-id="TRX102">
+                                        <i class="fas fa-exclamation-circle"></i> Review
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>TRX098</td>
+                                <td>UKM Fotografi</td>
+                                <td>Sewa kamera dan lensa</td>
+                                <td>28 Okt 2023</td>
+                                <td>Rp 1.200.000</td>
+                                <td>PROP007</td>
+                                <td><span class="status status-approved">Terverifikasi</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm view-transaction" data-id="TRX098">
+                                        <i class="fas fa-eye"></i> Lihat
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr style="background-color: #fff8e1;">
+                                <td>TRX101</td>
+                                <td>UKM Robotika</td>
+                                <td>Biaya pendaftaran kompetisi</td>
+                                <td>27 Okt 2023</td>
+                                <td>Rp 500.000</td>
+                                <td>PROP009</td>
+                                <td><span class="status status-warning">Dicurigai</span></td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm verify-transaction" data-id="TRX101">
+                                        <i class="fas fa-search"></i> Investigasi
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                    <div class="pagination-info">
+                        Menampilkan 1-5 dari 124 transaksi
+                    </div>
+                    <div class="pagination">
+                        <button class="btn btn-secondary btn-sm" disabled><i class="fas fa-chevron-left"></i></button>
+                        <span style="margin: 0 10px;">Halaman 1</span>
+                        <button class="btn btn-secondary btn-sm"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Verification Panel -->
+            <div class="form-container" style="margin-top: 30px;">
+                <h3>Verifikasi Manual</h3>
+                <p>Gunakan form ini untuk verifikasi transaksi yang memerlukan pemeriksaan manual</p>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="manualTransId">ID Transaksi</label>
+                        <input type="text" id="manualTransId" placeholder="Masukkan ID transaksi">
+                    </div>
+                    <div class="form-group">
+                        <label for="verificationResult">Hasil Verifikasi</label>
+                        <select id="verificationResult">
+                            <option value="">-- Pilih Hasil --</option>
+                            <option value="valid">Valid (Sesuai Proposal)</option>
+                            <option value="invalid">Tidak Valid (Tidak Sesuai)</option>
+                            <option value="suspicious">Dicurigai (Perlu Investigasi)</option>
+                            <option value="need_info">Butuh Info Tambahan</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="align-self: flex-end;">
+                        <button class="btn btn-primary" id="manualVerify">
+                            <i class="fas fa-check-circle"></i> Proses Verifikasi
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="verificationNotes">Catatan Verifikasi</label>
+                    <textarea id="verificationNotes" rows="3" placeholder="Catatan detail verifikasi (alasan jika ditolak/dicurigai)"></textarea>
+                </div>
+            </div>
+            
+            <!-- Monthly Report -->
+            <div class="table-container" style="margin-top: 30px;">
+                <h3>Laporan Verifikasi Bulanan</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Bulan</th>
+                                <th>Total Transaksi</th>
+                                <th>Terverifikasi</th>
+                                <th>Ditolak</th>
+                                <th>Rata-rata Waktu</th>
+                                <th>UKM Bermasalah</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Oktober 2023</td>
+                                <td>28</td>
+                                <td>22</td>
+                                <td>6</td>
+                                <td>1.5 hari</td>
+                                <td>2</td>
+                            </tr>
+                            <tr>
+                                <td>September 2023</td>
+                                <td>32</td>
+                                <td>30</td>
+                                <td>2</td>
+                                <td>1.2 hari</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>Agustus 2023</td>
+                                <td>25</td>
+                                <td>23</td>
+                                <td>2</td>
+                                <td>1.8 hari</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>Juli 2023</td>
+                                <td>18</td>
+                                <td>17</td>
+                                <td>1</td>
+                                <td>2.1 hari</td>
+                                <td>0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Verification Modal -->
+    <div id="verificationModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3 id="modalTitle">Verifikasi Transaksi</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="transactionDetail">
+                    <!-- Transaction details will be loaded here -->
+                </div>
+                <div class="form-group">
+                    <label for="modalNotes">Catatan Verifikasi</label>
+                    <textarea id="modalNotes" rows="3" placeholder="Berikan catatan verifikasi"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="modalResult">Hasil Verifikasi</label>
+                    <select id="modalResult">
+                        <option value="">-- Pilih Hasil --</option>
+                        <option value="valid">Valid (Sesuai Proposal)</option>
+                        <option value="invalid">Tidak Valid (Tidak Sesuai)</option>
+                        <option value="suspicious">Dicurigai (Perlu Investigasi)</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-success" id="confirmValid">
+                        <i class="fas fa-check"></i> Validasi
+                    </button>
+                    <button class="btn btn-danger" id="confirmInvalid">
+                        <i class="fas fa-times"></i> Tolak
+                    </button>
+                    <button class="btn btn-warning" id="confirmSuspicious">
+                        <i class="fas fa-exclamation-triangle"></i> Tandai Curang
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        // Filter functionality
+        document.getElementById('applyFilter').addEventListener('click', function() {
+            const ukm = document.getElementById('filterUkm').value;
+            const status = document.getElementById('filterStatus').value;
+            const date = document.getElementById('filterDate').value;
+            
+            alert(`Filter diterapkan: UKM ${ukm === 'all' ? 'Semua' : ukm}, Status ${status}, Tanggal ${date || 'Semua'}`);
+        });
+        
+        // Export functionality
+        document.getElementById('exportTransactions').addEventListener('click', function() {
+            alert('Data transaksi berhasil diexport ke Excel!');
+        });
+        
+        document.getElementById('refreshTransactions').addEventListener('click', function() {
+            alert('Daftar transaksi diperbarui!');
+        });
+        
+        // Manual verification
+        document.getElementById('manualVerify').addEventListener('click', function() {
+            const transId = document.getElementById('manualTransId').value;
+            const result = document.getElementById('verificationResult').value;
+            const notes = document.getElementById('verificationNotes').value;
+            
+            if (!transId || !result || !notes) {
+                alert('Harap lengkapi semua field!');
+                return;
+            }
+            
+            alert(`Transaksi ${transId} telah diverifikasi sebagai ${result}. Catatan: ${notes}`);
+            
+            // Reset form
+            document.getElementById('manualTransId').value = '';
+            document.getElementById('verificationResult').value = '';
+            document.getElementById('verificationNotes').value = '';
+        });
+        
+        // Modal functionality
+        const modal = document.getElementById('verificationModal');
+        const closeModal = document.querySelector('.close-modal');
+        const verifyBtns = document.querySelectorAll('.verify-transaction, .review-transaction');
+        
+        verifyBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const transId = this.getAttribute('data-id');
+                loadTransactionDetail(transId);
+                modal.style.display = 'block';
+            });
+        });
+        
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        
+        function loadTransactionDetail(transId) {
+            const detailDiv = document.getElementById('transactionDetail');
+            const title = document.getElementById('modalTitle');
+            
+            // Simulated data
+            const transactions = {
+                'TRX007': {
+                    ukm: 'U2M',
+                    keterangan: 'Penggantian peral produksi',
+                    tanggal: '30 Oktober 2023',
+                    jumlah: 'Rp 1.800.000',
+                    proposal: 'PROP002 - Bazar Produk UKM',
+                    status: 'Menunggu Verifikasi',
+                    catatan: 'Bukti transaksi berupa struk pembelian dari toko elektronik.',
+                    file: 'bukti_trx007.jpg'
+                },
+                'TRX045': {
+                    ukm: 'UKM Teater',
+                    keterangan: 'Pembelian properti panggung',
+                    tanggal: '29 Oktober 2023',
+                    jumlah: 'Rp 850.000',
+                    proposal: 'PROP008 - Pentas Seni Tahun 2023',
+                    status: 'Terverifikasi',
+                    catatan: 'Bukti transaksi valid, sesuai dengan proposal yang disetujui.',
+                    file: 'bukti_trx045.pdf'
+                },
+                'TRX102': {
+                    ukm: 'UKM Robotika',
+                    keterangan: 'Pembelian komponen robot',
+                    tanggal: '29 Oktober 2023',
+                    jumlah: 'Rp 950.000',
+                    proposal: 'TIDAK SESUAI PROPOSAL',
+                    status: 'Ditolak',
+                    catatan: 'ALERT: Transaksi tidak sesuai dengan item yang disetujui dalam proposal.',
+                    file: 'bukti_trx102.jpg'
+                },
+                'TRX101': {
+                    ukm: 'UKM Robotika',
+                    keterangan: 'Biaya pendaftaran kompetisi',
+                    tanggal: '27 Oktober 2023',
+                    jumlah: 'Rp 500.000',
+                    proposal: 'PROP009 - Kompetisi Robot Nasional',
+                    status: 'Dicurigai',
+                    catatan: 'Dicurigai: Bukti transaksi tidak jelas, perlu konfirmasi ke panitia kompetisi.',
+                    file: 'bukti_trx101.pdf'
+                }
+            };
+            
+            const transaction = transactions[transId] || transactions['TRX007'];
+            title.textContent = `Verifikasi Transaksi ${transId}`;
+            
+            detailDiv.innerHTML = `
+                <div class="transaction-detail-info">
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <strong>UKM:</strong>
+                            <span>${transaction.ukm}</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>ID Transaksi:</strong>
+                            <span>${transId}</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Keterangan:</strong>
+                            <span>${transaction.keterangan}</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Tanggal:</strong>
+                            <span>${transaction.tanggal}</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Jumlah:</strong>
+                            <span>${transaction.jumlah}</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Proposal Terkait:</strong>
+                            <span>${transaction.proposal}</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Status Saat Ini:</strong>
+                            <span>${transaction.status}</span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>File Bukti:</strong>
+                            <span>${transaction.file}</span>
+                        </div>
+                    </div>
+                    <div class="detail-section">
+                        <h4>Catatan Sistem:</h4>
+                        <p>${transaction.catatan}</p>
+                    </div>
+                    <div class="detail-section">
+                        <h4>Preview Bukti:</h4>
+                        <div class="proof-preview">
+                            <div class="preview-placeholder">
+                                <i class="fas fa-file-invoice" style="font-size: 48px; color: #6c757d;"></i>
+                                <p>Preview bukti transaksi ${transId}</p>
+                                <button class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-download"></i> Download File
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Verification actions
+        document.getElementById('confirmValid').addEventListener('click', function() {
+            const notes = document.getElementById('modalNotes').value;
+            if (!notes) {
+                alert('Harap berikan catatan validasi!');
+                return;
+            }
+            alert('Transaksi divalidasi sebagai VALID!');
+            modal.style.display = 'none';
+        });
+        
+        document.getElementById('confirmInvalid').addEventListener('click', function() {
+            const notes = document.getElementById('modalNotes').value;
+            if (!notes) {
+                alert('Harap berikan alasan penolakan!');
+                return;
+            }
+            if (confirm('Apakah Anda yakin menolak transaksi ini?')) {
+                alert('Transaksi ditolak! UKM akan menerima notifikasi.');
+                modal.style.display = 'none';
+            }
+        });
+        
+        document.getElementById('confirmSuspicious').addEventListener('click', function() {
+            const notes = document.getElementById('modalNotes').value;
+            if (!notes) {
+                alert('Harap berikan alasan penandaan!');
+                return;
+            }
+            alert('Transaksi ditandai sebagai MENCURIGAKAN! Akan diproses untuk investigasi lebih lanjut.');
+            modal.style.display = 'none';
+        });
+        
+        // Add CSS for transaction detail
+        const style = document.createElement('style');
+        style.textContent = `
+            .transaction-detail-info {
+                padding: 20px 0;
+            }
+            
+            .proof-preview {
+                border: 2px dashed #dee2e6;
+                border-radius: 10px;
+                padding: 30px;
+                text-align: center;
+                background-color: #f8f9fa;
+            }
+            
+            .preview-placeholder p {
+                margin: 15px 0;
+                color: #6c757d;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

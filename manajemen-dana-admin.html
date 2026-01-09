@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Dana - Sistem Transparansi Dana UKM</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Sistem Transparansi Dana</h2>
+                <div class="role-badge">Admin Keuangan</div>
+                <p class="current-date"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard-admin.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="kelola-ukm-admin.html"><i class="fas fa-users"></i> Kelola UKM</a></li>
+                    <li><a href="manajemen-dana-admin.html" class="active"><i class="fas fa-money-bill-wave"></i> Manajemen Dana</a></li>
+                    <li><a href="pengajuan-proposal-admin.html"><i class="fas fa-file-contract"></i> Pengajuan Proposal</a></li>
+                    <li><a href="verifikasi-transaksi-admin.html"><i class="fas fa-check-circle"></i> Verifikasi Transaksi</a></li>
+                    <li><a href="laporan-keuangan-admin.html"><i class="fas fa-chart-bar"></i> Laporan Keuangan</a></li>
+                    <li><a href="arsip-admin.html"><i class="fas fa-archive"></i> Arsip & Dokumen</a></li>
+                    <li><a href="audit-admin.html"><i class="fas fa-search"></i> Audit Keuangan</a></li>
+                    <li><a href="pengaturan-admin.html"><i class="fas fa-cog"></i> Pengaturan Sistem</a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="user-info">
+                    <div class="user-avatar">AD</div>
+                    <div class="user-details">
+                        <h3 class="user-name">Admin Keuangan</h3>
+                        <p class="user-role">Admin Keuangan - ITB STIKOM Bali</p>
+                    </div>
+                </div>
+                
+                <div class="page-title">
+                    <h1>Manajemen Dana UKM</h1>
+                    <p>Pengelolaan dan alokasi dana untuk seluruh Unit Kegiatan Mahasiswa</p>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-bar">
+                <button class="btn btn-primary" onclick="alokasiDana()">
+                    <i class="fas fa-hand-holding-usd"></i> Alokasi Dana Baru
+                </button>
+                <button class="btn btn-success" onclick="transferDana()">
+                    <i class="fas fa-exchange-alt"></i> Transfer Dana
+                </button>
+                <button class="btn btn-warning" onclick="rekapDana()">
+                    <i class="fas fa-file-excel"></i> Rekap Keuangan
+                </button>
+                <div class="filter-box">
+                    <select class="form-control">
+                        <option>Semua UKM</option>
+                        <option>UKM U2M</option>
+                        <option>UKM Robotika</option>
+                        <option>UKM Multimedia</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Financial Overview -->
+            <div class="dashboard-cards">
+                <div class="card" style="grid-column: span 2;">
+                    <div class="card-header">
+                        <h3>Ringkasan Keuangan</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <div class="financial-summary">
+                        <div class="summary-item">
+                            <h4>Total Anggaran Tahunan</h4>
+                            <div class="summary-value">Rp 250.000.000</div>
+                            <div class="summary-progress">
+                                <div class="progress-bar" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <h4>Dana Tersalurkan</h4>
+                            <div class="summary-value success">Rp 187.500.000</div>
+                            <div class="summary-progress">
+                                <div class="progress-bar" style="width: 75%; background-color: #4CAF50;"></div>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <h4>Sisa Dana</h4>
+                            <div class="summary-value warning">Rp 62.500.000</div>
+                            <div class="summary-progress">
+                                <div class="progress-bar" style="width: 25%; background-color: #FF9800;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Status Alokasi</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                    </div>
+                    <div class="allocation-status">
+                        <div class="status-item">
+                            <span class="status-label">Alokasi Selesai</span>
+                            <span class="status-value">14 UKM</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Proses Alokasi</span>
+                            <span class="status-value">3 UKM</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Belum Dialokasi</span>
+                            <span class="status-value">1 UKM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dana per UKM -->
+            <div class="table-container">
+                <h3>Alokasi Dana per UKM</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>UKM</th>
+                                <th>Anggaran Tahunan</th>
+                                <th>Tersalurkan</th>
+                                <th>Sisa Dana</th>
+                                <th>Persentase</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <strong>UKM U2M</strong>
+                                    <small>Unit Usaha Mahasiswa</small>
+                                </td>
+                                <td>Rp 18.500.000</td>
+                                <td>Rp 12.750.000</td>
+                                <td>Rp 5.750.000</td>
+                                <td>
+                                    <div class="progress-container">
+                                        <div class="progress-bar" style="width: 69%"></div>
+                                        <span>69%</span>
+                                    </div>
+                                </td>
+                                <td><span class="status status-active">Aktif</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary">Detail</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>UKM Robotika</strong>
+                                    <small>Bidang Teknologi</small>
+                                </td>
+                                <td>Rp 15.000.000</td>
+                                <td>Rp 10.200.000</td>
+                                <td>Rp 4.800.000</td>
+                                <td>
+                                    <div class="progress-container">
+                                        <div class="progress-bar" style="width: 68%"></div>
+                                        <span>68%</span>
+                                    </div>
+                                </td>
+                                <td><span class="status status-active">Aktif</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary">Detail</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>UKM Multimedia</strong>
+                                    <small>Bidang Kreatif</small>
+                                </td>
+                                <td>Rp 12.300.000</td>
+                                <td>Rp 8.450.000</td>
+                                <td>Rp 3.850.000</td>
+                                <td>
+                                    <div class="progress-container">
+                                        <div class="progress-bar" style="width: 69%"></div>
+                                        <span>69%</span>
+                                    </div>
+                                </td>
+                                <td><span class="status status-active">Aktif</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary">Detail</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>UKM Teater</strong>
+                                    <small>Bidang Seni</small>
+                                </td>
+                                <td>Rp 8.500.000</td>
+                                <td>Rp 5.100.000</td>
+                                <td>Rp 3.400.000</td>
+                                <td>
+                                    <div class="progress-container">
+                                        <div class="progress-bar" style="width: 60%"></div>
+                                        <span>60%</span>
+                                    </div>
+                                </td>
+                                <td><span class="status status-active">Aktif</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary">Detail</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Recent Allocations -->
+            <div class="table-container">
+                <h3>Riwayat Alokasi Dana Terbaru</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>UKM</th>
+                                <th>Jumlah</th>
+                                <th>Jenis Alokasi</th>
+                                <th>Disetujui Oleh</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>30 Jan 2024</td>
+                                <td>UKM U2M</td>
+                                <td>Rp 2.500.000</td>
+                                <td>Workshop Kewirausahaan</td>
+                                <td>Admin Keuangan</td>
+                                <td><span class="status status-approved">Disetujui</span></td>
+                            </tr>
+                            <tr>
+                                <td>28 Jan 2024</td>
+                                <td>UKM Robotika</td>
+                                <td>Rp 3.000.000</td>
+                                <td>Kompetisi Robot</td>
+                                <td>Admin Keuangan</td>
+                                <td><span class="status status-approved">Disetujui</span></td>
+                            </tr>
+                            <tr>
+                                <td>25 Jan 2024</td>
+                                <td>UKM Multimedia</td>
+                                <td>Rp 1.800.000</td>
+                                <td>Pelatihan Editing</td>
+                                <td>Admin Keuangan</td>
+                                <td><span class="status status-pending">Pending</span></td>
+                            </tr>
+                            <tr>
+                                <td>20 Jan 2024</td>
+                                <td>UKM Teater</td>
+                                <td>Rp 1.200.000</td>
+                                <td>Pentas Seni</td>
+                                <td>Admin Keuangan</td>
+                                <td><span class="status status-rejected">Ditolak</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        document.querySelector('.current-date').textContent = new Date().toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        function alokasiDana() {
+            alert('Form alokasi dana baru akan dibuka');
+        }
+        
+        function transferDana() {
+            alert('Form transfer dana antar UKM');
+        }
+        
+        function rekapDana() {
+            alert('Generate rekap keuangan Excel');
+        }
+    </script>
+</body>
+</html>

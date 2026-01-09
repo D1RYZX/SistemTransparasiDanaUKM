@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Pembina - Sistem Transparansi Dana UKM</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Tema Khusus Dashboard Pembina */
+        .dashboard-header-pembina {
+            background: linear-gradient(135deg, #1a3a8f 0%, #2a5bd7 100%);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(26, 58, 143, 0.2);
+        }
+        
+        .ukm-identity-pembina {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .ukm-title-pembina {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .ukm-badge-pembina {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .ukm-info-grid-pembina {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .info-item-pembina {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-label-pembina {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .info-value-pembina {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .card-stat-pembina {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border-top: 5px solid #2a5bd7;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .card-stat-pembina:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-icon-wrapper-pembina {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #e8efff 0%, #d4e1ff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: #2a5bd7;
+            font-size: 24px;
+        }
+        
+        .card-title-pembina {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .card-value-pembina {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a3a8f;
+            margin-bottom: 5px;
+            line-height: 1;
+        }
+        
+        /* FIX: Tambahkan style untuk format mata uang */
+        .currency-amount {
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: -0.5px;
+            white-space: nowrap;
+        }
+        
+        .card-desc-pembina {
+            font-size: 14px;
+            color: #777;
+        }
+        
+        .section-title-pembina {
+            font-size: 22px;
+            color: #1a3a8f;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e8efff;
+            font-weight: 600;
+        }
+        
+        .activity-table-pembina {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .activity-table-pembina th {
+            background: #f8f9fa;
+            color: #1a3a8f;
+            font-weight: 600;
+            padding: 15px;
+            border-bottom: 2px solid #e8efff;
+        }
+        
+        .activity-table-pembina td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+        
+        .activity-table-pembina tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .status-badge-pembina {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .status-pending-pembina {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-approved-pembina {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .action-btn-small-pembina {
+            padding: 6px 12px;
+            background: #2a5bd7;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-btn-small-pembina:hover {
+            background: #1a3a8f;
+        }
+        
+        .quick-actions-pembina {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .quick-action-btn-pembina {
+            padding: 15px;
+            background: white;
+            border: 2px solid #e8efff;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: #1a3a8f;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .quick-action-btn-pembina:hover {
+            background: #2a5bd7;
+            color: white;
+            border-color: #2a5bd7;
+            transform: translateY(-3px);
+        }
+        
+        .quick-action-icon-pembina {
+            font-size: 24px;
+            color: #2a5bd7;
+        }
+        
+        .quick-action-btn-pembina:hover .quick-action-icon-pembina {
+            color: white;
+        }
+        
+        /* Warna khusus card */
+        .card-total-pembina { border-top-color: #2a5bd7; }
+        .card-pending-pembina { border-top-color: #ff9800; }
+        .card-approved-pembina { border-top-color: #4caf50; }
+        .card-warning-pembina { border-top-color: #f44336; }
+        
+        .card-total-pembina .card-icon-wrapper-pembina {
+            background: linear-gradient(135deg, #e8efff 0%, #d4e1ff 100%);
+            color: #2a5bd7;
+        }
+        
+        .card-pending-pembina .card-icon-wrapper-pembina {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffecb3 100%);
+            color: #ff9800;
+        }
+        
+        .card-approved-pembina .card-icon-wrapper-pembina {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            color: #4caf50;
+        }
+        
+        .card-warning-pembina .card-icon-wrapper-pembina {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: #f44336;
+        }
+        
+        /* FIX: Style untuk ringkasan keuangan */
+        .financial-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .financial-label {
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .financial-amount {
+            font-weight: 600;
+            color: #2a5bd7;
+            white-space: nowrap;
+        }
+        
+        @media (max-width: 768px) {
+            .ukm-identity-pembina {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .ukm-title-pembina {
+                font-size: 20px;
+            }
+            
+            .ukm-info-grid-pembina {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-value-pembina {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="menu-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar sidebar-pembina">
+            <div class="sidebar-header">
+                <h2>Sistem Transparansi Dana</h2>
+                <div class="role-badge pembina-badge">Pembina UKM <span class="ukm-name">U2M</span></div>
+                <p class="current-date" style="color: rgba(255,255,255,0.7); margin-top: 10px; font-size: 14px;"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard-pembina.html" class="active active-pembina"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="laporan-ormawa.html"><i class="fas fa-chart-bar"></i> Informasi UKM</a></li>
+                    <li><a href="history-lpj-pembina.html"><i class="fas fa-history"></i> Review LPJ & K</a></li>
+                    <li><a href="riwayat-transaksi.html"><i class="fas fa-exchange-alt"></i> Riwayat Transaksi</a></li>
+                </ul>
+            </nav>
+            
+            <button class="logout-btn btn-pembina">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+            </button>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="user-info">
+                    <div class="user-avatar pembina-avatar">PU</div>
+                    <div class="user-details">
+                        <h3 class="user-name">Pembina UKM <span class="ukm-name">U2M</span></h3>
+                        <p class="user-role">Pembina UKM - ITB STIKOM Bali</p>
+                    </div>
+                </div>
+                
+                <div class="page-title">
+                    <h1>Dashboard Pembina UKM <span class="ukm-name">U2M</span></h1>
+                    <p>Monitoring dan pengawasan aktivitas keuangan UKM yang Anda bina</p>
+                </div>
+            </div>
+            
+            <!-- UKM Header -->
+            <div class="dashboard-header-pembina">
+                <div class="ukm-identity-pembina">
+                    <div>
+                        <h1 class="ukm-title-pembina">
+                            UKM <span class="ukm-name">U2M</span>
+                            <span class="ukm-badge-pembina">Unit Usaha Mahasiswa</span>
+                        </h1>
+                        <p style="margin: 5px 0 0; opacity: 0.9; font-size: 14px;">
+                            Status: <strong style="color: #4caf50;">Aktif</strong> | 
+                            Jumlah Anggota: <strong>35</strong> | 
+                            Tahun Berdiri: <strong>2020</strong>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="ukm-info-grid-pembina">
+                    <div class="info-item-pembina">
+                        <span class="info-label-pembina">Ketua UKM</span>
+                        <span class="info-value-pembina">Ketua UKM U2M</span>
+                    </div>
+                    <div class="info-item-pembina">
+                        <span class="info-label-pembina">Bendahara</span>
+                        <span class="info-value-pembina">Bendahara UKM U2M</span>
+                    </div>
+                    <div class="info-item-pembina">
+                        <span class="info-label-pembina">Email</span>
+                        <span class="info-value-pembina">ketua.u2m@stikom-bali.ac.id</span>
+                    </div>
+                    <div class="info-item-pembina">
+                        <span class="info-label-pembina">Kontak</span>
+                        <span class="info-value-pembina">+62 812-3456-7890</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stats Cards -->
+            <h2 class="section-title-pembina">Statistik UKM</h2>
+            <div class="dashboard-cards">
+                <div class="card-stat-pembina card-total-pembina">
+                    <div class="card-icon-wrapper-pembina">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="card-title-pembina">Total Dana UKM</div>
+                    <!-- FIX: Format yang benar untuk Rp 18.500.000 -->
+                    <div class="card-value-pembina currency-amount">Rp 18.500.000</div>
+                    <div class="card-desc-pembina">Tahun Anggaran 2025</div>
+                </div>
+                
+                <div class="card-stat-pembina card-pending-pembina">
+                    <div class="card-icon-wrapper-pembina">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="card-title-pembina">LPJ Menunggu Review</div>
+                    <div class="card-value-pembina">2</div>
+                    <div class="card-desc-pembina">LPJ perlu ditinjau</div>
+                </div>
+                
+                <div class="card-stat-pembina card-approved-pembina">
+                    <div class="card-icon-wrapper-pembina">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="card-title-pembina">Transaksi Disetujui</div>
+                    <div class="card-value-pembina">24</div>
+                    <div class="card-desc-pembina">Tahun 2025</div>
+                </div>
+                
+                <div class="card-stat-pembina card-warning-pembina">
+                    <div class="card-icon-wrapper-pembina">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="card-title-pembina">Peringatan Sistem</div>
+                    <div class="card-value-pembina">1</div>
+                    <div class="card-desc-pembina">Perlu perhatian</div>
+                </div>
+            </div>
+            
+            <!-- Recent Activities -->
+            <h2 class="section-title-pembina">Aktivitas Terbaru UKM <span class="ukm-name">U2M</span></h2>
+            <div class="activity-table-pembina">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Aktivitas</th>
+                            <th>Keterangan</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>25 Okt 2025</td>
+                            <td>Upload LPJ Tahun 2025</td>
+                            <td>LPJ_U2M_2025.pdf</td>
+                            <td><span class="status-badge-pembina status-pending-pembina">Menunggu Review</span></td>
+                            <td><button class="action-btn-small-pembina"><i class="fas fa-search"></i> Review</button></td>
+                        </tr>
+                        <tr>
+                            <td>24 Okt 2025</td>
+                            <td>Upload Bukti Transaksi</td>
+                            <td>TRX015 - Rp 450.000</td>
+                            <td><span class="status-badge-pembina status-approved-pembina">Disetujui</span></td>
+                            <td><button class="action-btn-small-pembina"><i class="fas fa-eye"></i> Lihat</button></td>
+                        </tr>
+                        <tr>
+                            <td>20 Okt 2025</td>
+                            <td>Pengajuan Proposal Kegiatan</td>
+                            <td>Workshop Digital Marketing</td>
+                            <td><span class="status-badge-pembina status-pending-pembina">Direview</span></td>
+                            <td><button class="action-btn-small-pembina"><i class="fas fa-eye"></i> Lihat</button></td>
+                        </tr>
+                        <tr>
+                            <td>18 Okt 2025</td>
+                            <td>LPJ Disetujui Admin</td>
+                            <td>LPJ Semester I 2025</td>
+                            <td><span class="status-badge-pembina status-approved-pembina">Selesai</span></td>
+                            <td><button class="action-btn-small-pembina"><i class="fas fa-download"></i> Download</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Quick Actions -->
+            <h2 class="section-title-pembina">Aksi Cepat</h2>
+            <div class="quick-actions-pembina">
+                <a href="history-lpj-pembina.html" class="quick-action-btn-pembina">
+                    <div class="quick-action-icon-pembina">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <span>Review LPJ & K</span>
+                </a>
+                <a href="laporan-ormawa.html" class="quick-action-btn-pembina">
+                    <div class="quick-action-icon-pembina">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <span>Lihat Laporan</span>
+                </a>
+                <a href="riwayat-transaksi.html" class="quick-action-btn-pembina">
+                    <div class="quick-action-icon-pembina">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <span>Riwayat Transaksi</span>
+                </a>
+                <a href="#" class="quick-action-btn-pembina">
+                    <div class="quick-action-icon-pembina">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <span>Export Laporan</span>
+                </a>
+            </div>
+            
+            <!-- Financial Overview -->
+            <h2 class="section-title-pembina" style="margin-top: 40px;">Ringkasan Keuangan</h2>
+            <div class="dashboard-cards">
+                <div class="card-stat-pembina" style="grid-column: span 2;">
+                    <div class="card-icon-wrapper-pembina">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="card-title-pembina">Alokasi Dana Berdasarkan Kegiatan</div>
+                    <div style="margin-top: 20px;">
+                        <!-- FIX: Menggunakan struktur yang lebih rapi untuk nominal -->
+                        <div class="financial-item">
+                            <span class="financial-label">SEMINAR & WORKSHOP</span>
+                            <span class="financial-amount">Rp 6.200.000 (33%)</span>
+                        </div>
+                        <div class="financial-item">
+                            <span class="financial-label">U2M EXPO</span>
+                            <span class="financial-amount">Rp 4.500.000 (24%)</span>
+                        </div>
+                        <div class="financial-item">
+                            <span class="financial-label">BUSINESS SHARING</span>
+                            <span class="financial-amount">Rp 3.800.000 (21%)</span>
+                        </div>
+                        <div class="financial-item" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
+                            <span class="financial-label">KOPI SORE & MUSANG</span>
+                            <span class="financial-amount">Rp 4.000.000 (22%)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userData = JSON.parse(localStorage.getItem('user'));
+            if (userData && userData.roleType === 'pembina') {
+                document.querySelectorAll('.ukm-name').forEach(el => {
+                    el.textContent = userData.ukm;
+                });
+                
+                const ukmBadge = document.querySelector('.ukm-badge-pembina');
+                if (ukmBadge && userData.ukminfo) {
+                    ukmBadge.textContent = userData.ukminfo;
+                }
+                
+                const userAvatar = document.querySelector('.user-avatar');
+                if (userAvatar) {
+                    if (userData.ukm === 'Multimedia') {
+                        userAvatar.textContent = 'PM';
+                    } else if (userData.ukm === 'U2M') {
+                        userAvatar.textContent = 'PU';
+                    }
+                }
+                
+                const currentDateElement = document.querySelector('.current-date');
+                if (currentDateElement) {
+                    const now = new Date();
+                    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    currentDateElement.textContent = now.toLocaleDateString('id-ID', options);
+                }
+                
+                // Format semua nominal uang di halaman
+                formatCurrencyAmounts();
+            }
+        });
+        
+        // Fungsi untuk memformat semua nominal uang
+        function formatCurrencyAmounts() {
+            // Format untuk card Total Dana UKM
+            const totalDanaElement = document.querySelector('.card-total-pembina .card-value-pembina');
+            if (totalDanaElement) {
+                totalDanaElement.innerHTML = 'Rp 18.500.000';
+            }
+            
+            // Format untuk ringkasan keuangan
+            const financialAmounts = document.querySelectorAll('.financial-amount');
+            financialAmounts.forEach(element => {
+                const text = element.textContent;
+                // Pastikan format sudah benar
+                element.textContent = text.replace(/\s+/g, ' ');
+            });
+            
+            // Format untuk tabel aktivitas
+            const tableAmounts = document.querySelectorAll('.activity-table-pembina td:nth-child(3)');
+            tableAmounts.forEach(element => {
+                const text = element.textContent;
+                if (text.includes('Rp')) {
+                    element.textContent = text.replace(/\s+/g, ' ');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

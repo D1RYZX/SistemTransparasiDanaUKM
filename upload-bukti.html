@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Bukti Transaksi - Sistem Transparansi Dana UKM</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Sistem Transparansi Dana</h2>
+                <div class="role-badge">UKM - Unit Usaha Mahasiswa</div>
+                <p class="current-date" style="color: rgba(255,255,255,0.7); margin-top: 10px; font-size: 14px;"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard-ukm.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="pengajuan-dana.html"><i class="fas fa-hand-holding-usd"></i> Pengajuan Dana</a></li>
+                    <li><a href="laporan-keuangan.html"><i class="fas fa-file-invoice-dollar"></i> Laporan Keuangan</a></li>
+                    <li><a href="upload-bukti.html" class="active"><i class="fas fa-upload"></i> Upload Bukti Transaksi</a></li>
+                    <li><a href="lpj-dan-k.html"><i class="fas fa-clipboard-check"></i> LPJ & K</a></li>
+                </ul>
+            </nav>
+            
+            <button class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+            </button>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="user-info">
+                    <div class="user-avatar">KU</div>
+                    <div class="user-details">
+                        <h3 class="user-name">Ketua UKM U2M</h3>
+                        <p class="user-role">UKM - Unit Usaha Mahasiswa</p>
+                    </div>
+                </div>
+                
+                <div class="page-title">
+                    <h1>Upload Bukti Transaksi</h1>
+                    <p>Unggah bukti transaksi untuk pertanggungjawaban keuangan</p>
+                </div>
+            </div>
+            
+            <!-- Upload Form -->
+            <div class="form-container">
+                <form id="uploadForm">
+                    <div class="form-group">
+                        <label for="kegiatan">Pilih Kegiatan</label>
+                        <select id="kegiatan" name="kegiatan" required>
+                            <option value="">-- Pilih Kegiatan --</option>
+                            <option value="seminar">SEMINAR & WORKSHOP</option>
+                            <option value="business">BUSINESS SHARING</option>
+                            <option value="expo">U2M EXPO</option>
+                            <option value="kopi">KOPI SORE</option>
+                            <option value="musang">MUSANG</option>
+                        </select>
+                        <p class="form-help">Pilih kegiatan terkait untuk transaksi ini</p>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="transaksiId">ID Transaksi</label>
+                            <input type="text" id="transaksiId" name="transaksiId" value="TRX008" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="tanggal">Tanggal Transaksi</label>
+                            <input type="date" id="tanggal" name="tanggal" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="keterangan">Keterangan Transaksi</label>
+                        <textarea id="keterangan" name="keterangan" rows="3" placeholder="Deskripsi detail transaksi" required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="jumlah">Jumlah (Rp)</label>
+                            <input type="number" id="jumlah" name="jumlah" placeholder="Contoh: 500000" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="metodePembayaran">Metode Pembayaran</label>
+                            <select id="metodePembayaran" name="metodePembayaran" required>
+                                <option value="">-- Pilih Metode --</option>
+                                <option value="transfer">Transfer Bank</option>
+                                <option value="tunai">Tunai</option>
+                                <option value="ewallet">E-Wallet</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fileUpload">Unggah Bukti Transaksi</label>
+                        <div class="file-upload-area" id="fileUploadArea">
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #2a5bd7; margin-bottom: 15px;"></i>
+                            <p>Drag & drop file bukti transaksi atau <span class="browse-link" id="browseLink">browse</span></p>
+                            <p class="file-types">Format yang didukung: JPG, PNG, PDF (Maks. 5MB)</p>
+                            <input type="file" id="fileUpload" name="fileUpload" accept=".jpg,.jpeg,.png,.pdf" style="display: none;">
+                            <div id="fileName" style="margin-top: 15px; font-weight: 500; color: #1a3a8f;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="verification-notice">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <strong>Pencatatan Transaksi:</strong> Sistem ini berfungsi untuk mencatat semua transaksi keuangan UKM. Pastikan data yang diinput sudah benar.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload"></i> Upload Bukti Transaksi
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> Reset Form
+                        </button>
+                        <a href="laporan-keuangan.html" class="btn btn-warning">
+                            <i class="fas fa-list"></i> Lihat Transaksi Lain
+                        </a>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Recent Uploads -->
+            <div class="table-container" style="margin-top: 30px;">
+                <h3>Riwayat Transaksi U2M</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tanggal</th>
+                                <th>Kegiatan</th>
+                                <th>Keterangan</th>
+                                <th>Jumlah</th>
+                                <th>Status</th>
+                                <th>File</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>TRX007</td>
+                                <td>30 Okt 2023</td>
+                                <td>SEMINAR & WORKSHOP</td>
+                                <td>Pembelian peralatan presentasi</td>
+                                <td>Rp 1.800.000</td>
+                                <td><span class="status status-pending">Menunggu</span></td>
+                                <td><a href="#" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Lihat</a></td>
+                            </tr>
+                            <tr>
+                                <td>TRX006</td>
+                                <td>28 Okt 2023</td>
+                                <td>U2M EXPO</td>
+                                <td>Sewa venue untuk expo</td>
+                                <td>Rp 2.500.000</td>
+                                <td><span class="status status-approved">Disetujui</span></td>
+                                <td><a href="#" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Lihat</a></td>
+                            </tr>
+                            <tr>
+                                <td>TRX005</td>
+                                <td>25 Okt 2023</td>
+                                <td>KOPI SORE</td>
+                                <td>Pembelian bahan kopi dan snack</td>
+                                <td>Rp 750.000</td>
+                                <td><span class="status status-approved">Disetujui</span></td>
+                                <td><a href="#" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Lihat</a></td>
+                            </tr>
+                            <tr>
+                                <td>TRX004</td>
+                                <td>20 Okt 2023</td>
+                                <td>BUSINESS SHARING</td>
+                                <td>Honorium pembicara</td>
+                                <td>Rp 1.200.000</td>
+                                <td><span class="status status-approved">Disetujui</span></td>
+                                <td><a href="#" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Lihat</a></td>
+                            </tr>
+                            <tr>
+                                <td>TRX003</td>
+                                <td>15 Okt 2023</td>
+                                <td>MUSANG</td>
+                                <td>Pembelian perlengkapan musang</td>
+                                <td>Rp 850.000</td>
+                                <td><span class="status status-approved">Disetujui</span></td>
+                                <td><a href="#" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Lihat</a></td>
+                            </tr>
+                            <tr>
+                                <td>TRX002</td>
+                                <td>10 Okt 2023</td>
+                                <td>SEMINAR & WORKSHOP</td>
+                                <td>Printing materi dan sertifikat</td>
+                                <td>Rp 450.000</td>
+                                <td><span class="status status-approved">Disetujui</span></td>
+                                <td><a href="#" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Lihat</a></td>
+                            </tr>
+                            <tr>
+                                <td>TRX001</td>
+                                <td>5 Okt 2023</td>
+                                <td>U2M EXPO</td>
+                                <td>Promosi dan iklan</td>
+                                <td>Rp 1.500.000</td>
+                                <td><span class="status status-approved">Disetujui</span></td>
+                                <td><a href="#" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Lihat</a></td>
+                            </tr>
+                            <tr>
+                                <td>TRX000</td>
+                                <td>28 Sep 2023</td>
+                                <td>BUSINESS SHARING</td>
+                                <td>Konsumsi peserta</td>
+                                <td>Rp 900.000</td>
+                                <td><span class="status status-approved">Disetujui</span></td>
+                                <td><a href="#" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Lihat</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                    <div class="pagination-info">
+                        Menampilkan 1-8 dari 15 transaksi
+                    </div>
+                    <div class="pagination">
+                        <button class="btn btn-secondary btn-sm" disabled><i class="fas fa-chevron-left"></i></button>
+                        <span style="margin: 0 10px;">Halaman 1 dari 2</span>
+                        <button class="btn btn-secondary btn-sm"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        // File upload functionality
+        const fileUpload = document.getElementById('fileUpload');
+        const browseLink = document.getElementById('browseLink');
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const fileName = document.getElementById('fileName');
+        
+        browseLink.addEventListener('click', function() {
+            fileUpload.click();
+        });
+        
+        fileUploadArea.addEventListener('click', function() {
+            fileUpload.click();
+        });
+        
+        fileUploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            fileUploadArea.style.backgroundColor = '#f0f5ff';
+        });
+        
+        fileUploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            fileUploadArea.style.backgroundColor = '';
+        });
+        
+        fileUploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            fileUploadArea.style.backgroundColor = '';
+            if (e.dataTransfer.files.length) {
+                fileUpload.files = e.dataTransfer.files;
+                updateFileName();
+            }
+        });
+        
+        fileUpload.addEventListener('change', updateFileName);
+        
+        function updateFileName() {
+            if (fileUpload.files.length > 0) {
+                fileName.textContent = `File: ${fileUpload.files[0].name}`;
+                fileName.style.color = '#28a745';
+            } else {
+                fileName.textContent = '';
+            }
+        }
+        
+        // Form submission
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validation
+            const jumlah = document.getElementById('jumlah').value;
+            const kegiatan = document.getElementById('kegiatan').value;
+            
+            if (!fileUpload.files.length) {
+                alert('Harap pilih file bukti transaksi!');
+                return;
+            }
+            
+            if (!kegiatan) {
+                alert('Harap pilih kegiatan terkait!');
+                return;
+            }
+            
+            if (confirm('Apakah data yang diinput sudah benar? Bukti transaksi akan dicatat dalam sistem.')) {
+                alert('Bukti transaksi berhasil diupload! Data telah tersimpan dalam sistem.');
+                // Reset form
+                this.reset();
+                fileName.textContent = '';
+                // Set default transaction ID (next in sequence)
+                document.getElementById('transaksiId').value = 'TRX009';
+                // Set today's date as default
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('tanggal').value = today;
+            }
+        });
+        
+        // Set default date to today
+        window.onload = function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('tanggal').value = today;
+        };
+    </script>
+</body>
+</html>

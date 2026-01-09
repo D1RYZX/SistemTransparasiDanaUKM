@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Sistem Transparansi Dana UKM</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Sistem Transparansi Dana</h2>
+                <div class="role-badge">Admin Keuangan</div>
+                <p class="current-date" style="color: rgba(255,255,255,0.7); margin-top: 10px; font-size: 14px;"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard-admin.html" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="kelola-ukm-admin.html"><i class="fas fa-users"></i> Kelola UKM</a></li>
+                    <li><a href="manajemen-dana-admin.html"><i class="fas fa-money-bill-wave"></i> Manajemen Dana</a></li>
+                    <li><a href="pengajuan-proposal-admin.html"><i class="fas fa-file-contract"></i> Pengajuan Proposal</a></li>
+                    <li><a href="verifikasi-transaksi-admin.html"><i class="fas fa-check-circle"></i> Verifikasi Transaksi</a></li>
+                    <li><a href="laporan-keuangan-admin.html"><i class="fas fa-chart-bar"></i> Laporan Keuangan</a></li>
+                    <li><a href="arsip-admin.html"><i class="fas fa-archive"></i> Arsip & Dokumen</a></li>
+                    <li><a href="audit-admin.html"><i class="fas fa-search"></i> Audit Keuangan</a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="user-info">
+                    <div class="user-avatar">AD</div>
+                    <div class="user-details">
+                        <h3 class="user-name">Admin Keuangan</h3>
+                        <p class="user-role">Admin Keuangan - ITB STIKOM Bali</p>
+                    </div>
+                </div>
+                
+                <div class="page-title">
+                    <h1>Dashboard Admin Keuangan</h1>
+                    <p>Monitoring dan manajemen keuangan seluruh UKM ITB STIKOM Bali</p>
+                </div>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Total UKM Aktif</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-university"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">18</div>
+                    <p class="card-desc">UKM terdaftar di sistem</p>
+                </div>
+                
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3>Pengajuan Menunggu</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">24</div>
+                    <p class="card-desc">Proposal & LPJ</p>
+                </div>
+                
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3>Dana Tersalurkan</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">Rp 245.7 Jt</div>
+                    <p class="card-desc>Tahun 2024</p>
+                </div>
+                
+                <div class="card card-danger">
+                    <div class="card-header">
+                        <h3>Peringatan Sistem</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">7</div>
+                    <p class="card-desc">Perlu tindakan segera</p>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="dashboard-cards">
+                <div class="card" style="grid-column: span 2;">
+                    <div class="card-header">
+                        <h3>Quick Actions</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                    </div>
+                    <div class="quick-actions-grid">
+                        <a href="verifikasi-transaksi-admin.html" class="quick-action-btn">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Verifikasi Transaksi</span>
+                        </a>
+                        <a href="pengajuan-proposal-admin.html" class="quick-action-btn">
+                            <i class="fas fa-file-contract"></i>
+                            <span>Review Proposal</span>
+                        </a>
+                        <a href="laporan-keuangan-admin.html" class="quick-action-btn">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Laporan Bulanan</span>
+                        </a>
+                        <a href="kelola-ukm-admin.html" class="quick-action-btn">
+                            <i class="fas fa-users"></i>
+                            <span>Kelola UKM</span>
+                        </a>
+                        <a href="audit-admin.html" class="quick-action-btn">
+                            <i class="fas fa-search"></i>
+                            <span>Audit Keuangan</span>
+                        </a>
+                        <a href="manajemen-dana-admin.html" class="quick-action-btn">
+                            <i class="fas fa-hand-holding-usd"></i>
+                            <span>Alokasi Dana</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Status Sistem</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                    </div>
+                    <div class="system-status">
+                        <div class="status-item">
+                            <span class="status-label">Database</span>
+                            <span class="status-indicator active"></span>
+                            <span class="status-text">Online</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Server</span>
+                            <span class="status-indicator active"></span>
+                            <span class="status-text">Online</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Backup</span>
+                            <span class="status-indicator warning"></span>
+                            <span class="status-text">H-1</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">API</span>
+                            <span class="status-indicator active"></span>
+                            <span class="status-text">Online</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pending Tasks -->
+            <div class="table-container">
+                <h3>Tugas Prioritas</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Prioritas</th>
+                                <th>Deskripsi</th>
+                                <th>UKM</th>
+                                <th>Deadline</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="priority-badge high">Tinggi</span></td>
+                                <td>Verifikasi transaksi workshop U2M</td>
+                                <td>U2M</td>
+                                <td>31 Jan 2024</td>
+                                <td><button class="btn btn-sm btn-primary">Proses</button></td>
+                            </tr>
+                            <tr>
+                                <td><span class="priority-badge high">Tinggi</span></td>
+                                <td>Review proposal UKM Robotika</td>
+                                <td>Robotika</td>
+                                <td>1 Feb 2024</td>
+                                <td><button class="btn btn-sm btn-primary">Review</button></td>
+                            </tr>
+                            <tr>
+                                <td><span class="priority-badge medium">Sedang</span></td>
+                                <td>Validasi LPJ UKM Multimedia</td>
+                                <td>Multimedia</td>
+                                <td>3 Feb 2024</td>
+                                <td><button class="btn btn-sm btn-warning">Validasi</button></td>
+                            </tr>
+                            <tr>
+                                <td><span class="priority-badge low">Rendah</span></td>
+                                <td>Update data anggaran UKM Teater</td>
+                                <td>Teater</td>
+                                <td>5 Feb 2024</td>
+                                <td><button class="btn btn-sm btn-secondary">Update</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Recent Activities -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Aktivitas Terbaru</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                    </div>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon success">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p>Transaksi UKM U2M diverifikasi</p>
+                                <small>30 Jan 2024, 14:30</small>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon warning">
+                                <i class="fas fa-exclamation"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p>Proposal UKM Robotika dikembalikan</p>
+                                <small>30 Jan 2024, 11:20</small>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon primary">
+                                <i class="fas fa-upload"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p>LPJ UKM Fotografi diupload</p>
+                                <small>29 Jan 2024, 16:45</small>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon danger">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p>Transaksi UKM Teater ditolak</p>
+                                <small>29 Jan 2024, 14:15</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Distribusi Dana</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                    </div>
+                    <div class="distribution-chart">
+                        <div class="chart-item">
+                            <div class="chart-label">UKM U2M</div>
+                            <div class="chart-bar" style="width: 25%; background-color: #4CAF50;"></div>
+                            <div class="chart-value">25%</div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-label">UKM Robotika</div>
+                            <div class="chart-bar" style="width: 20%; background-color: #2196F3;"></div>
+                            <div class="chart-value">20%</div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-label">UKM Multimedia</div>
+                            <div class="chart-bar" style="width: 15%; background-color: #FF9800;"></div>
+                            <div class="chart-value">15%</div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-label">UKM Lainnya</div>
+                            <div class="chart-bar" style="width: 40%; background-color: #9C27B0;"></div>
+                            <div class="chart-value">40%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        // Set current date
+        document.querySelector('.current-date').textContent = new Date().toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengajuan Dana - Sistem Transparansi Dana UKM</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .pengajuan-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        
+        .kegiatan-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .kegiatan-option {
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .kegiatan-option:hover {
+            border-color: #2a5bd7;
+            background-color: #f0f5ff;
+        }
+        
+        .kegiatan-option.selected {
+            border-color: #2a5bd7;
+            background-color: #e8f4ff;
+        }
+        
+        .kegiatan-icon {
+            font-size: 24px;
+            color: #2a5bd7;
+            margin-bottom: 10px;
+        }
+        
+        .anggaran-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .anggaran-table th,
+        .anggaran-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .anggaran-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .total-anggaran {
+            background-color: #e7f7fa;
+            font-weight: bold;
+        }
+        
+        .file-upload-section {
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+            background-color: #f8f9fa;
+            transition: all 0.3s;
+        }
+        
+        .file-upload-section:hover {
+            border-color: #2a5bd7;
+            background-color: #f0f5ff;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: #2a5bd7;
+            margin-bottom: 15px;
+        }
+        
+        .proposal-info {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .proposal-info i {
+            color: #856404;
+            margin-right: 10px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-review {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+        
+        .status-approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Sistem Transparansi Dana</h2>
+                <div class="role-badge">UKM - <span class="ukm-name">U2M</span></div>
+                <p class="current-date" style="color: rgba(255,255,255,0.7); margin-top: 10px; font-size: 14px;"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard-ukm.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="pengajuan-dana.html" class="active"><i class="fas fa-hand-holding-usd"></i> Pengajuan Dana</a></li>
+                    <li><a href="laporan-keuangan.html"><i class="fas fa-file-invoice-dollar"></i> Laporan Keuangan</a></li>
+                    <li><a href="upload-bukti.html"><i class="fas fa-upload"></i> Upload Bukti Transaksi</a></li>
+                    <li><a href="lpj-dan-k.html"><i class="fas fa-clipboard-check"></i> LPJ & K</a></li>
+                </ul>
+            </nav>
+            
+            <button class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+            </button>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="user-info">
+                    <div class="user-avatar">KU</div>
+                    <div class="user-details">
+                        <h3 class="user-name">Ketua UKM <span class="ukm-name">U2M</span></h3>
+                        <p class="user-role">UKM - <span class="ukm-info">Unit Usaha Mahasiswa</span></p>
+                    </div>
+                </div>
+                
+                <div class="page-title">
+                    <h1>Pengajuan Dana Kegiatan</h1>
+                    <p>Ajukan permohonan dana untuk kegiatan UKM U2M</p>
+                </div>
+            </div>
+            
+            <!-- Form Pengajuan Dana -->
+            <div class="pengajuan-container">
+                <div class="proposal-info">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <strong>Informasi Penting:</strong> Pengajuan dana harus diajukan minimal 30 hari sebelum pelaksanaan kegiatan. Proposal harus mencakup rincian anggaran, timeline, dan tujuan kegiatan.
+                </div>
+                
+                <form id="pengajuanForm">
+                    <div class="form-group">
+                        <label for="judulProposal">Judul Proposal</label>
+                        <input type="text" id="judulProposal" name="judulProposal" placeholder="Contoh: Seminar Kewirausahaan Digital 2024" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="jenisKegiatan">Jenis Kegiatan U2M</label>
+                            <div class="kegiatan-options">
+                                <div class="kegiatan-option" data-value="seminar">
+                                    <div class="kegiatan-icon">
+                                        <i class="fas fa-chalkboard-teacher"></i>
+                                    </div>
+                                    <div>SEMINAR & WORKSHOP</div>
+                                </div>
+                                <div class="kegiatan-option" data-value="business">
+                                    <div class="kegiatan-icon">
+                                        <i class="fas fa-handshake"></i>
+                                    </div>
+                                    <div>BUSINESS SHARING</div>
+                                </div>
+                                <div class="kegiatan-option" data-value="expo">
+                                    <div class="kegiatan-icon">
+                                        <i class="fas fa-store"></i>
+                                    </div>
+                                    <div>U2M EXPO</div>
+                                </div>
+                                <div class="kegiatan-option" data-value="kopi">
+                                    <div class="kegiatan-icon">
+                                        <i class="fas fa-coffee"></i>
+                                    </div>
+                                    <div>KOPI SORE</div>
+                                </div>
+                                <div class="kegiatan-option" data-value="musang">
+                                    <div class="kegiatan-icon">
+                                        <i class="fas fa-paw"></i>
+                                    </div>
+                                    <div>MUSANG</div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="jenisKegiatan" name="jenisKegiatan" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tanggalMulai">Tanggal Mulai Kegiatan</label>
+                            <input type="date" id="tanggalMulai" name="tanggalMulai" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tanggalSelesai">Tanggal Selesai Kegiatan</label>
+                            <input type="date" id="tanggalSelesai" name="tanggalSelesai" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="lokasiKegiatan">Lokasi Kegiatan</label>
+                            <input type="text" id="lokasiKegiatan" name="lokasiKegiatan" placeholder="Contoh: Gedung Student Center" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="jumlahPeserta">Estimasi Jumlah Peserta</label>
+                            <input type="number" id="jumlahPeserta" name="jumlahPeserta" placeholder="Contoh: 100" min="1" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="deskripsiKegiatan">Deskripsi Kegiatan</label>
+                        <textarea id="deskripsiKegiatan" name="deskripsiKegiatan" rows="4" placeholder="Jelaskan secara detail tentang kegiatan yang akan dilaksanakan, tujuan, manfaat, dan rencana pelaksanaannya" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tujuanKegiatan">Tujuan dan Manfaat Kegiatan</label>
+                        <textarea id="tujuanKegiatan" name="tujuanKegiatan" rows="3" placeholder="Jelaskan tujuan spesifik dan manfaat yang akan diperoleh dari kegiatan ini" required></textarea>
+                    </div>
+                    
+                    <!-- Rincian Anggaran -->
+                    <div class="form-group">
+                        <label>Rincian Anggaran Biaya</label>
+                        <div class="anggaran-info" style="color: #666; margin-bottom: 10px;">
+                            Tambahkan item anggaran untuk kegiatan ini:
+                        </div>
+                        
+                        <table class="anggaran-table">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Item</th>
+                                    <th>Keterangan</th>
+                                    <th>Jumlah (Rp)</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="anggaranBody">
+                                <tr>
+                                    <td>1</td>
+                                    <td><input type="text" class="item-input" placeholder="Contoh: Honor Pembicara" required></td>
+                                    <td><input type="text" class="keterangan-input" placeholder="Keterangan item" required></td>
+                                    <td><input type="number" class="jumlah-input" placeholder="0" min="0" required></td>
+                                    <td><button type="button" class="btn btn-danger btn-sm" onclick="hapusBaris(this)"><i class="fas fa-trash"></i></button></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="total-anggaran">
+                                    <td colspan="3" style="text-align: right;"><strong>Total Anggaran</strong></td>
+                                    <td id="totalAnggaran">Rp 0</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        
+                        <button type="button" class="btn btn-secondary" onclick="tambahBaris()" style="margin-top: 10px;">
+                            <i class="fas fa-plus"></i> Tambah Item Anggaran
+                        </button>
+                    </div>
+                    
+                    <!-- Upload Proposal -->
+                    <div class="form-group">
+                        <label>Upload Dokumen Pendukung</label>
+                        
+                        <div class="file-upload-section" id="proposalUploadSection">
+                            <div class="upload-icon">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <h4>Unggah Proposal Kegiatan</h4>
+                            <p>Format: PDF (Maks. 10MB)</p>
+                            <input type="file" id="proposalFile" name="proposalFile" accept=".pdf" style="display: none;">
+                            <button type="button" class="upload-btn" id="browseProposalBtn">
+                                <i class="fas fa-folder-open"></i> Pilih File Proposal
+                            </button>
+                            <div id="proposalFileName" style="margin-top: 15px; font-weight: 500;"></div>
+                        </div>
+                        
+                        <div class="file-upload-section" id="rabUploadSection" style="margin-top: 20px;">
+                            <div class="upload-icon">
+                                <i class="fas fa-file-excel"></i>
+                            </div>
+                            <h4>Unggah RAB (Rencana Anggaran Biaya)</h4>
+                            <p>Format: PDF/Excel (Maks. 10MB)</p>
+                            <input type="file" id="rabFile" name="rabFile" accept=".pdf,.xlsx,.xls" style="display: none;">
+                            <button type="button" class="upload-btn" id="browseRabBtn">
+                                <i class="fas fa-folder-open"></i> Pilih File RAB
+                            </button>
+                            <div id="rabFileName" style="margin-top: 15px; font-weight: 500;"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Informasi Proses -->
+                    <div class="form-group">
+                        <div class="notification" style="background-color: #e7f7fa; padding: 15px; border-radius: 8px; border-left: 4px solid #17a2b8;">
+                            <i class="fas fa-clock" style="color: #17a2b8; margin-right: 10px;"></i>
+                            <div>
+                                <strong>Proses Pengajuan:</strong> Pengajuan dana akan direview oleh Pembina UKM terlebih dahulu, kemudian diteruskan ke Admin Keuangan. Proses review membutuhkan waktu 7-14 hari kerja. Anda akan mendapatkan notifikasi via email saat status berubah.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Ajukan Proposal
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> Reset Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Riwayat Pengajuan -->
+            <div class="table-container">
+                <h3>Riwayat Pengajuan Dana U2M</h3>
+                <p>Daftar proposal yang telah diajukan sebelumnya</p>
+                
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Proposal</th>
+                                <th>Judul Proposal</th>
+                                <th>Kegiatan</th>
+                                <th>Tanggal Ajuan</th>
+                                <th>Jumlah Diajukan</th>
+                                <th>Status Pembina</th>
+                                <th>Status Admin</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PROP-2024-001</td>
+                                <td>Workshop Digital Marketing 2024</td>
+                                <td>SEMINAR & WORKSHOP</td>
+                                <td>15 Jan 2024</td>
+                                <td>Rp 5.000.000</td>
+                                <td><span class="status-badge status-approved">Disetujui</span></td>
+                                <td><span class="status-badge status-review">Dalam Review</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-eye"></i> Detail
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PROP-2023-012</td>
+                                <td>Business Sharing dengan Entrepreneur Muda</td>
+                                <td>BUSINESS SHARING</td>
+                                <td>5 Des 2023</td>
+                                <td>Rp 3.500.000</td>
+                                <td><span class="status-badge status-approved">Disetujui</span></td>
+                                <td><span class="status-badge status-approved">Disetujui</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-download"></i> Unduh
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PROP-2023-011</td>
+                                <td>U2M Expo Tahun 2023</td>
+                                <td>U2M EXPO</td>
+                                <td>20 Nov 2023</td>
+                                <td>Rp 8.000.000</td>
+                                <td><span class="status-badge status-approved">Disetujui</span></td>
+                                <td><span class="status-badge status-approved">Disetujui</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-download"></i> Unduh
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PROP-2023-010</td>
+                                <td>Kopi Sore dengan Alumni Sukses</td>
+                                <td>KOPI SORE</td>
+                                <td>10 Nov 2023</td>
+                                <td>Rp 1.200.000</td>
+                                <td><span class="status-badge status-rejected">Ditolak</span></td>
+                                <td><span class="status-badge status-rejected">Ditolak</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-eye"></i> Detail
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PROP-2023-009</td>
+                                <td>Perawatan dan Pengembangan Musang</td>
+                                <td>MUSANG</td>
+                                <td>1 Nov 2023</td>
+                                <td>Rp 2.000.000</td>
+                                <td><span class="status-badge status-approved">Disetujui</span></td>
+                                <td><span class="status-badge status-approved">Disetujui</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-download"></i> Unduh
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                    <div class="pagination-info">
+                        Menampilkan 1-5 dari 12 pengajuan
+                    </div>
+                    <div class="pagination">
+                        <button class="btn btn-secondary btn-sm" disabled><i class="fas fa-chevron-left"></i></button>
+                        <span style="margin: 0 10px;">Halaman 1</span>
+                        <button class="btn btn-secondary btn-sm"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        // Set tanggal default
+        window.onload = function() {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            document.getElementById('tanggalMulai').valueAsDate = tomorrow;
+            document.getElementById('tanggalSelesai').valueAsDate = tomorrow;
+            
+            // Set min date untuk tanggal mulai (besok)
+            const minDate = tomorrow.toISOString().split('T')[0];
+            document.getElementById('tanggalMulai').min = minDate;
+            document.getElementById('tanggalSelesai').min = minDate;
+            
+            updateTotalAnggaran();
+        };
+        
+        // Pilihan kegiatan
+        document.querySelectorAll('.kegiatan-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.kegiatan-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                document.getElementById('jenisKegiatan').value = this.getAttribute('data-value');
+            });
+        });
+        
+        // File upload functionality
+        const proposalFile = document.getElementById('proposalFile');
+        const rabFile = document.getElementById('rabFile');
+        const browseProposalBtn = document.getElementById('browseProposalBtn');
+        const browseRabBtn = document.getElementById('browseRabBtn');
+        const proposalFileName = document.getElementById('proposalFileName');
+        const rabFileName = document.getElementById('rabFileName');
+        
+        browseProposalBtn.addEventListener('click', function() {
+            proposalFile.click();
+        });
+        
+        browseRabBtn.addEventListener('click', function() {
+            rabFile.click();
+        });
+        
+        proposalFile.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                proposalFileName.textContent = `File: ${this.files[0].name}`;
+                proposalFileName.style.color = '#28a745';
+            }
+        });
+        
+        rabFile.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                rabFileName.textContent = `File: ${this.files[0].name}`;
+                rabFileName.style.color = '#28a745';
+            }
+        });
+        
+        // Fungsi untuk tabel anggaran
+        let barisAnggaran = 1;
+        
+        function tambahBaris() {
+            barisAnggaran++;
+            const tbody = document.getElementById('anggaranBody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${barisAnggaran}</td>
+                <td><input type="text" class="item-input" placeholder="Contoh: Sewa Venue" required></td>
+                <td><input type="text" class="keterangan-input" placeholder="Keterangan item" required></td>
+                <td><input type="number" class="jumlah-input" placeholder="0" min="0" required oninput="updateTotalAnggaran()"></td>
+                <td><button type="button" class="btn btn-danger btn-sm" onclick="hapusBaris(this)"><i class="fas fa-trash"></i></button></td>
+            `;
+            tbody.appendChild(newRow);
+        }
+        
+        function hapusBaris(button) {
+            if (barisAnggaran > 1) {
+                const row = button.closest('tr');
+                row.remove();
+                barisAnggaran--;
+                
+                // Update nomor urut
+                const rows = document.querySelectorAll('#anggaranBody tr');
+                rows.forEach((row, index) => {
+                    row.cells[0].textContent = index + 1;
+                });
+                
+                updateTotalAnggaran();
+            }
+        }
+        
+        function updateTotalAnggaran() {
+            const jumlahInputs = document.querySelectorAll('.jumlah-input');
+            let total = 0;
+            
+            jumlahInputs.forEach(input => {
+                const value = parseFloat(input.value) || 0;
+                total += value;
+            });
+            
+            document.getElementById('totalAnggaran').textContent = `Rp ${total.toLocaleString('id-ID')}`;
+        }
+        
+        // Event listener untuk update total ketika input berubah
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('jumlah-input')) {
+                updateTotalAnggaran();
+            }
+        });
+        
+        // Form submission
+        document.getElementById('pengajuanForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const jenisKegiatan = document.getElementById('jenisKegiatan').value;
+            const judulProposal = document.getElementById('judulProposal').value;
+            const totalAnggaran = document.getElementById('totalAnggaran').textContent;
+            
+            if (!jenisKegiatan) {
+                alert('Harap pilih jenis kegiatan!');
+                return;
+            }
+            
+            if (!proposalFile.files.length) {
+                alert('Harap upload file proposal!');
+                return;
+            }
+            
+            // Validasi tanggal
+            const tanggalMulai = new Date(document.getElementById('tanggalMulai').value);
+            const tanggalSelesai = new Date(document.getElementById('tanggalSelesai').value);
+            const today = new Date();
+            
+            if (tanggalMulai < today) {
+                alert('Tanggal mulai tidak boleh kurang dari hari ini!');
+                return;
+            }
+            
+            if (tanggalSelesai < tanggalMulai) {
+                alert('Tanggal selesai tidak boleh kurang dari tanggal mulai!');
+                return;
+            }
+            
+            // Validasi anggaran
+            const jumlahInputs = document.querySelectorAll('.jumlah-input');
+            let valid = true;
+            jumlahInputs.forEach(input => {
+                if (!input.value || parseFloat(input.value) <= 0) {
+                    valid = false;
+                }
+            });
+            
+            if (!valid) {
+                alert('Harap isi semua item anggaran dengan jumlah yang valid!');
+                return;
+            }
+            
+            if (confirm(`Apakah Anda yakin mengajukan proposal ini?\n\nJudul: ${judulProposal}\nTotal Anggaran: ${totalAnggaran}`)) {
+                alert('Proposal berhasil diajukan! Menunggu review dari Pembina UKM.');
+                
+                // Reset form
+                this.reset();
+                proposalFileName.textContent = '';
+                rabFileName.textContent = '';
+                document.querySelectorAll('.kegiatan-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Reset tabel anggaran
+                document.getElementById('anggaranBody').innerHTML = `
+                    <tr>
+                        <td>1</td>
+                        <td><input type="text" class="item-input" placeholder="Contoh: Honor Pembicara" required></td>
+                        <td><input type="text" class="keterangan-input" placeholder="Keterangan item" required></td>
+                        <td><input type="number" class="jumlah-input" placeholder="0" min="0" required></td>
+                        <td><button type="button" class="btn btn-danger btn-sm" onclick="hapusBaris(this)"><i class="fas fa-trash"></i></button></td>
+                    </tr>
+                `;
+                barisAnggaran = 1;
+                updateTotalAnggaran();
+                
+                // Set tanggal default
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                document.getElementById('tanggalMulai').valueAsDate = tomorrow;
+                document.getElementById('tanggalSelesai').valueAsDate = tomorrow;
+                
+                setTimeout(() => {
+                    alert('Proposal telah ditambahkan ke riwayat pengajuan. Anda akan mendapatkan notifikasi via email saat status berubah.');
+                }, 500);
+            }
+        });
+        
+        // Validasi tanggal selesai harus >= tanggal mulai
+        document.getElementById('tanggalMulai').addEventListener('change', function() {
+            const tanggalMulai = this.value;
+            document.getElementById('tanggalSelesai').min = tanggalMulai;
+            
+            if (document.getElementById('tanggalSelesai').value < tanggalMulai) {
+                document.getElementById('tanggalSelesai').value = tanggalMulai;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Keuangan - Sistem Transparansi Dana UKM</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Sistem Transparansi Dana</h2>
+                <div class="role-badge">UKM - <span class="ukm-name">U2M</span></div>
+                <p class="current-date" style="color: rgba(255,255,255,0.7); margin-top: 10px; font-size: 14px;"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard-ukm.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="pengajuan-dana.html"><i class="fas fa-hand-holding-usd"></i> Pengajuan Dana</a></li>
+                    <li><a href="laporan-keuangan.html" class="active"><i class="fas fa-file-invoice-dollar"></i> Laporan Keuangan</a></li>
+                    <li><a href="upload-bukti.html"><i class="fas fa-upload"></i> Upload Bukti Transaksi</a></li>
+                    <li><a href="lpj-dan-k.html"><i class="fas fa-clipboard-check"></i> LPJ & K</a></li>
+                </ul>
+            </nav>
+            
+            <button class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+            </button>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="user-info">
+                    <div class="user-avatar">KU</div>
+                    <div class="user-details">
+                        <h3 class="user-name">Ketua UKM U2M</h3>
+                        <p class="user-role">UKM - Unit Usaha Mahasiswa</p>
+                    </div>
+                </div>
+                
+                <div class="page-title">
+                    <h1>Laporan Keuangan</h1>
+                    <p>Detail transaksi dan laporan keuangan UKM U2M</p>
+                </div>
+            </div>
+            
+            <!-- Filter Options -->
+            <div class="table-container" style="margin-bottom: 20px;">
+                <h3>Filter Laporan</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="periode">Periode</label>
+                        <select id="periode">
+                            <option value="all">Semua Periode</option>
+                            <option value="month">Bulan Ini</option>
+                            <option value="last3">3 Bulan Terakhir</option>
+                            <option value="year">Tahun Ini</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status">
+                            <option value="all">Semua Status</option>
+                            <option value="approved">Disetujui</option>
+                            <option value="pending">Menunggu</option>
+                            <option value="rejected">Ditolak</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="kategori">Kategori</label>
+                        <select id="kategori">
+                            <option value="all">Semua Kategori</option>
+                            <option value="operasional">Operasional</option>
+                            <option value="kegiatan">Kegiatan</option>
+                            <option value="administrasi">Administrasi</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="align-self: flex-end;">
+                        <button class="btn btn-primary" id="filterBtn">
+                            <i class="fas fa-filter"></i> Terapkan Filter
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Financial Summary -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Total Pemasukan</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">Rp 15.250.000</div>
+                    <p class="card-desc">Total dana yang diterima UKM</p>
+                </div>
+                
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3>Total Pengeluaran</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">Rp 9.750.000</div>
+                    <p class="card-desc">Total dana yang telah digunakan</p>
+                </div>
+                
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3>Saldo Akhir</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">Rp 5.500.000</div>
+                    <p class="card-desc">Saldo saat ini</p>
+                </div>
+            </div>
+            
+            <!-- Transaction Table -->
+            <div class="table-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Daftar Transaksi</h3>
+                    <button class="btn btn-primary" id="exportBtn">
+                        <i class="fas fa-download"></i> Export Excel
+                    </button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table id="transactionTable">
+                        <thead>
+                            <tr>
+                                <th>ID Transaksi</th>
+                                <th>Tanggal</th>
+                                <th>Keterangan</th>
+                                <th>Kategori</th>
+                                <th>Jumlah</th>
+                                <th>Status</th>
+                                <th>Bukti</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>TRX001</td>
+                                <td>15 Okt 2023</td>
+                                <td>Pembelian bahan baku produk</td>
+                                <td>Operasional</td>
+                                <td>Rp 1.250.000</td>
+                                <td><span class="status status-approved">Disetujui</span></td>
+                                <td><a href="#" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td>TRX002</td>
+                                <td>18 Okt 2023</td>
+                                <td>Transportasi kegiatan workshop</td>
+                                <td>Kegiatan</td>
+                                <td>Rp 350.000</td>
+                                <td><span class="status status-pending">Menunggu</span></td>
+                                <td><a href="#" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td>TRX003</td>
+                                <td>20 Okt 2023</td>
+                                <td>Percetakan materi pelatihan</td>
+                                <td>Administrasi</td>
+                                <td>Rp 800.000</td>
+                                <td><span class="status status-approved">Disetujui</span></td>
+                                <td><a href="#" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td>TRX004</td>
+                                <td>22 Okt 2023</td>
+                                <td>Konsumsi rapat bulanan</td>
+                                <td>Operasional</td>
+                                <td>Rp 420.000</td>
+                                <td><span class="status status-rejected">Ditolak</span></td>
+                                <td><a href="#" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td>TRX005</td>
+                                <td>25 Okt 2023</td>
+                                <td>Pembelian alat tulis kantor</td>
+                                <td>Administrasi</td>
+                                <td>Rp 150.000</td>
+                                <td><span class="status status-approved">Disetujui</span></td>
+                                <td><a href="#" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td>TRX006</td>
+                                <td>28 Okt 2023</td>
+                                <td>Dana kegiatan bazar produk</td>
+                                <td>Kegiatan</td>
+                                <td>Rp 2.500.000</td>
+                                <td><span class="status status-approved">Disetujui</span></td>
+                                <td><a href="#" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td>TRX007</td>
+                                <td>30 Okt 2023</td>
+                                <td>Penggantian peral produksi</td>
+                                <td>Operasional</td>
+                                <td>Rp 1.800.000</td>
+                                <td><span class="status status-pending">Menunggu</span></td>
+                                <td><a href="#" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                    <div class="pagination-info">
+                        Menampilkan 1-7 dari 7 transaksi
+                    </div>
+                    <div class="pagination">
+                        <button class="btn btn-secondary btn-sm" disabled><i class="fas fa-chevron-left"></i></button>
+                        <span style="margin: 0 10px;">Halaman 1</span>
+                        <button class="btn btn-secondary btn-sm" disabled><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Monthly Summary -->
+            <div class="table-container">
+                <h3>Ringkasan Bulanan</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Bulan</th>
+                                <th>Pemasukan</th>
+                                <th>Pengeluaran</th>
+                                <th>Saldo</th>
+                                <th>Jumlah Transaksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Oktober 2023</td>
+                                <td>Rp 5.000.000</td>
+                                <td>Rp 3.270.000</td>
+                                <td>Rp 1.730.000</td>
+                                <td>7</td>
+                            </tr>
+                            <tr>
+                                <td>September 2023</td>
+                                <td>Rp 5.250.000</td>
+                                <td>Rp 3.480.000</td>
+                                <td>Rp 1.770.000</td>
+                                <td>5</td>
+                            </tr>
+                            <tr>
+                                <td>Agustus 2023</td>
+                                <td>Rp 5.000.000</td>
+                                <td>Rp 3.000.000</td>
+                                <td>Rp 2.000.000</td>
+                                <td>4</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('filterBtn').addEventListener('click', function() {
+            alert('Filter diterapkan! (Simulasi)');
+        });
+        
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            alert('Data berhasil diexport ke Excel! (Simulasi)');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Transaksi - Sistem Transparansi Dana UKM</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Verifikasi Transaksi Specific Styles */
+        .verification-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        
+        .tab-btn {
+            padding: 12px 25px;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #666;
+        }
+        
+        .tab-btn.active {
+            background: #1a3a8f;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .transaction-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid #FF9800;
+        }
+        
+        .transaction-card.verified {
+            border-left-color: #4CAF50;
+        }
+        
+        .transaction-card.rejected {
+            border-left-color: #f44336;
+        }
+        
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .transaction-id {
+            font-weight: 600;
+            color: #1a3a8f;
+            font-size: 18px;
+        }
+        
+        .transaction-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .transaction-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .transaction-documents {
+            margin-bottom: 25px;
+        }
+        
+        .document-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .document-icon {
+            color: #1a3a8f;
+        }
+        
+        .verification-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+        
+        .bulk-actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .filter-options {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-group label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            min-width: 200px;
+        }
+        
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a3a8f;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .verification-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab-btn {
+                flex: 1;
+                min-width: 120px;
+            }
+            
+            .transaction-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .verification-actions {
+                justify-content: flex-start;
+            }
+            
+            .filter-group select,
+            .filter-group input {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Sistem Transparansi Dana</h2>
+                <div class="role-badge">Admin Keuangan</div>
+                <p class="current-date"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard-admin.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="kelola-ukm-admin.html"><i class="fas fa-users"></i> Kelola UKM</a></li>
+                    <li><a href="manajemen-dana-admin.html"><i class="fas fa-money-bill-wave"></i> Manajemen Dana</a></li>
+                    <li><a href="pengajuan-proposal-admin.html"><i class="fas fa-file-contract"></i> Pengajuan Proposal</a></li>
+                    <li><a href="verifikasi-transaksi-admin.html" class="active"><i class="fas fa-check-circle"></i> Verifikasi Transaksi</a></li>
+                    <li><a href="laporan-keuangan-admin.html"><i class="fas fa-chart-bar"></i> Laporan Keuangan</a></li>
+                    <li><a href="arsip-admin.html"><i class="fas fa-archive"></i> Arsip & Dokumen</a></li>
+                    <li><a href="audit-admin.html"><i class="fas fa-search"></i> Audit Keuangan</a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="user-info">
+                    <div class="user-avatar">AD</div>
+                    <div class="user-details">
+                        <h3 class="user-name">Admin Keuangan</h3>
+                        <p class="user-role">Admin Keuangan - ITB STIKOM Bali</p>
+                    </div>
+                </div>
+                
+                <div class="page-title">
+                    <h1>Verifikasi Transaksi UKM</h1>
+                    <p>Validasi dan verifikasi bukti transaksi keuangan Unit Kegiatan Mahasiswa</p>
+                </div>
+            </div>
+            
+            <!-- Stats Summary -->
+            <div class="stats-summary">
+                <div class="stat-item">
+                    <div class="stat-value">24</div>
+                    <div class="stat-label">Menunggu Verifikasi</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">156</div>
+                    <div class="stat-label">Terverifikasi</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">Ditolak</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">Rp 98.7 Jt</div>
+                    <div class="stat-label">Total Terverifikasi</div>
+                </div>
+            </div>
+            
+            <!-- Filter Options -->
+            <div class="filter-options">
+                <div class="filter-group">
+                    <label>Status:</label>
+                    <select id="filterStatus" onchange="filterTransactions()">
+                        <option value="all">Semua Status</option>
+                        <option value="pending">Menunggu Verifikasi</option>
+                        <option value="verified">Terverifikasi</option>
+                        <option value="rejected">Ditolak</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>UKM:</label>
+                    <select id="filterUKM" onchange="filterTransactions()">
+                        <option value="all">Semua UKM</option>
+                        <option value="u2m">UKM U2M</option>
+                        <option value="robotika">UKM Robotika</option>
+                        <option value="multimedia">UKM Multimedia</option>
+                        <option value="teater">UKM Teater</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Tanggal:</label>
+                    <input type="date" id="filterDate" onchange="filterTransactions()">
+                </div>
+                <div class="filter-group">
+                    <label>Jumlah:</label>
+                    <select id="filterAmount" onchange="filterTransactions()">
+                        <option value="all">Semua Jumlah</option>
+                        <option value="small">≤ Rp 1.000.000</option>
+                        <option value="medium">Rp 1-5 Juta</option>
+                        <option value="large">≥ Rp 5.000.000</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="verification-tabs">
+                <button class="tab-btn active" onclick="showTab('pending')">
+                    <i class="fas fa-clock"></i> Menunggu (24)
+                </button>
+                <button class="tab-btn" onclick="showTab('verified')">
+                    <i class="fas fa-check-circle"></i> Terverifikasi (156)
+                </button>
+                <button class="tab-btn" onclick="showTab('rejected')">
+                    <i class="fas fa-times-circle"></i> Ditolak (8)
+                </button>
+                <button class="tab-btn" onclick="showTab('all')">
+                    <i class="fas fa-list"></i> Semua Transaksi
+                </button>
+            </div>
+            
+            <!-- Bulk Actions -->
+            <div class="bulk-actions">
+                <button class="btn btn-success" onclick="bulkVerify()">
+                    <i class="fas fa-check-double"></i> Verifikasi Terpilih
+                </button>
+                <button class="btn btn-danger" onclick="bulkReject()">
+                    <i class="fas fa-times"></i> Tolak Terpilih
+                </button>
+                <button class="btn btn-secondary" onclick="clearSelection()">
+                    <i class="fas fa-times"></i> Batalkan Pilihan
+                </button>
+            </div>
+            
+            <!-- Pending Transactions -->
+            <div id="pending-tab" class="tab-content active">
+                <!-- Transaction 1 -->
+                <div class="transaction-card">
+                    <div class="transaction-header">
+                        <div>
+                            <div class="transaction-id">TRX-2024-0012</div>
+                            <div class="ukm-name">UKM U2M - Unit Usaha Mahasiswa</div>
+                        </div>
+                        <div class="transaction-amount">Rp 1.800.000</div>
+                    </div>
+                    
+                    <div class="transaction-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Tanggal Transaksi</span>
+                            <span class="detail-value">30 Januari 2024</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Jenis Pengeluaran</span>
+                            <span class="detail-value">Workshop Material</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Kategori</span>
+                            <span class="detail-value">Kegiatan Rutin</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Diajukan Oleh</span>
+                            <span class="detail-value">Ketua UKM U2M</span>
+                        </div>
+                    </div>
+                    
+                    <div class="transaction-documents">
+                        <h4>Bukti Dokumen:</h4>
+                        <div class="document-item">
+                            <i class="fas fa-receipt document-icon"></i>
+                            <div>
+                                <div>Struk Pembelian ATK.pdf</div>
+                                <small>1.2 MB • Diupload: 30 Jan 2024</small>
+                            </div>
+                            <button class="btn btn-sm btn-primary" onclick="viewDocument('struk.pdf')">
+                                <i class="fas fa-eye"></i> Lihat
+                            </button>
+                        </div>
+                        <div class="document-item">
+                            <i class="fas fa-image document-icon"></i>
+                            <div>
+                                <div>Foto Barang Bukti.jpg</div>
+                                <small>2.4 MB • Diupload: 30 Jan 2024</small>
+                            </div>
+                            <button class="btn btn-sm btn-primary" onclick="viewDocument('foto.jpg')">
+                                <i class="fas fa-eye"></i> Lihat
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="verification-actions">
+                        <div class="form-check" style="margin-right: auto;">
+                            <input type="checkbox" class="transaction-check" id="trx1">
+                            <label for="trx1">Pilih untuk aksi bulk</label>
+                        </div>
+                        <button class="btn btn-success" onclick="verifyTransaction('TRX-2024-0012')">
+                            <i class="fas fa-check"></i> Verifikasi
+                        </button>
+                        <button class="btn btn-danger" onclick="rejectTransaction('TRX-2024-0012')">
+                            <i class="fas fa-times"></i> Tolak
+                        </button>
+                        <button class="btn btn-primary" onclick="requestRevision('TRX-2024-0012')">
+                            <i class="fas fa-edit"></i> Minta Revisi
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Transaction 2 -->
+                <div class="transaction-card">
+                    <div class="transaction-header">
+                        <div>
+                            <div class="transaction-id">TRX-2024-0015</div>
+                            <div class="ukm-name">UKM Robotika</div>
+                        </div>
+                        <div class="transaction-amount">Rp 850.000</div>
+                    </div>
+                    
+                    <div class="transaction-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Tanggal Transaksi</span>
+                            <span class="detail-value">29 Januari 2024</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Jenis Pengeluaran</span>
+                            <span class="detail-value">Komponen Elektronik</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Kategori</span>
+                            <span class="detail-value">Perlengkapan</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Diajukan Oleh</span>
+                            <span class="detail-value">Ketua UKM Robotika</span>
+                        </div>
+                    </div>
+                    
+                    <div class="transaction-documents">
+                        <h4>Bukti Dokumen:</h4>
+                        <div class="document-item">
+                            <i class="fas fa-receipt document-icon"></i>
+                            <div>
+                                <div>Invoice Komponen.pdf</div>
+                                <small>850 KB • Diupload: 29 Jan 2024</small>
+                            </div>
+                            <button class="btn btn-sm btn-primary" onclick="viewDocument('invoice.pdf')">
+                                <i class="fas fa-eye"></i> Lihat
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="verification-actions">
+                        <div class="form-check" style="margin-right: auto;">
+                            <input type="checkbox" class="transaction-check" id="trx2">
+                            <label for="trx2">Pilih untuk aksi bulk</label>
+                        </div>
+                        <button class="btn btn-success" onclick="verifyTransaction('TRX-2024-0015')">
+                            <i class="fas fa-check"></i> Verifikasi
+                        </button>
+                        <button class="btn btn-danger" onclick="rejectTransaction('TRX-2024-0015')">
+                            <i class="fas fa-times"></i> Tolak
+                        </button>
+                        <button class="btn btn-primary" onclick="requestRevision('TRX-2024-0015')">
+                            <i class="fas fa-edit"></i> Minta Revisi
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Transaction 3 -->
+                <div class="transaction-card">
+                    <div class="transaction-header">
+                        <div>
+                            <div class="transaction-id">TRX-2024-0020</div>
+                            <div class="ukm-name">UKM Multimedia</div>
+                        </div>
+                        <div class="transaction-amount">Rp 2.300.000</div>
+                    </div>
+                    
+                    <div class="transaction-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Tanggal Transaksi</span>
+                            <span class="detail-value">28 Januari 2024</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Jenis Pengeluaran</span>
+                            <span class="detail-value">Software Lisensi</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Kategori</span>
+                            <span class="detail-value">Aset Digital</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Diajukan Oleh</span>
+                            <span class="detail-value">Ketua UKM Multimedia</span>
+                        </div>
+                    </div>
+                    
+                    <div class="transaction-documents">
+                        <h4>Bukti Dokumen:</h4>
+                        <div class="document-item">
+                            <i class="fas fa-file-invoice document-icon"></i>
+                            <div>
+                                <div>Invoice Software.pdf</div>
+                                <small>1.5 MB • Diupload: 28 Jan 2024</small>
+                            </div>
+                            <button class="btn btn-sm btn-primary" onclick="viewDocument('software.pdf')">
+                                <i class="fas fa-eye"></i> Lihat
+                            </button>
+                        </div>
+                        <div class="document-item">
+                            <i class="fas fa-key document-icon"></i>
+                            <div>
+                                <div>Lisensi Key.txt</div>
+                                <small>2 KB • Diupload: 28 Jan 2024</small>
+                            </div>
+                            <button class="btn btn-sm btn-primary" onclick="viewDocument('key.txt')">
+                                <i class="fas fa-eye"></i> Lihat
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="verification-actions">
+                        <div class="form-check" style="margin-right: auto;">
+                            <input type="checkbox" class="transaction-check" id="trx3">
+                            <label for="trx3">Pilih untuk aksi bulk</label>
+                        </div>
+                        <button class="btn btn-success" onclick="verifyTransaction('TRX-2024-0020')">
+                            <i class="fas fa-check"></i> Verifikasi
+                        </button>
+                        <button class="btn btn-danger" onclick="rejectTransaction('TRX-2024-0020')">
+                            <i class="fas fa-times"></i> Tolak
+                        </button>
+                        <button class="btn btn-primary" onclick="requestRevision('TRX-2024-0020')">
+                            <i class="fas fa-edit"></i> Minta Revisi
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Verified Transactions -->
+            <div id="verified-tab" class="tab-content">
+                <div class="table-container">
+                    <h3>Transaksi Terverifikasi</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID Transaksi</th>
+                                    <th>UKM</th>
+                                    <th>Jumlah</th>
+                                    <th>Kategori</th>
+                                    <th>Tanggal</th>
+                                    <th>Diverifikasi Oleh</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>TRX-2024-0011</td>
+                                    <td>UKM U2M</td>
+                                    <td>Rp 450.000</td>
+                                    <td>ATK</td>
+                                    <td>27 Jan 2024</td>
+                                    <td>Admin Keuangan</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" onclick="viewTransaction('TRX-2024-0011')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>TRX-2024-0010</td>
+                                    <td>UKM Robotika</td>
+                                    <td>Rp 1.200.000</td>
+                                    <td>Komponen</td>
+                                    <td>26 Jan 2024</td>
+                                    <td>Admin Keuangan</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" onclick="viewTransaction('TRX-2024-0010')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Rejected Transactions -->
+            <div id="rejected-tab" class="tab-content">
+                <div class="table-container">
+                    <h3>Transaksi Ditolak</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID Transaksi</th>
+                                    <th>UKM</th>
+                                    <th>Jumlah</th>
+                                    <th>Alasan Penolakan</th>
+                                    <th>Tanggal</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>TRX-2024-0008</td>
+                                    <td>UKM Teater</td>
+                                    <td>Rp 1.500.000</td>
+                                    <td>Dokumen tidak lengkap</td>
+                                    <td>25 Jan 2024</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" onclick="viewTransaction('TRX-2024-0008')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-primary" onclick="reconsiderTransaction('TRX-2024-0008')">
+                                            <i class="fas fa-redo"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- All Transactions -->
+            <div id="all-tab" class="tab-content">
+                <div class="table-container">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3>Semua Transaksi</h3>
+                        <button class="btn btn-primary" onclick="exportTransactions()">
+                            <i class="fas fa-download"></i> Export Data
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID Transaksi</th>
+                                    <th>UKM</th>
+                                    <th>Jumlah</th>
+                                    <th>Kategori</th>
+                                    <th>Tanggal</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>TRX-2024-0012</td>
+                                    <td>UKM U2M</td>
+                                    <td>Rp 1.800.000</td>
+                                    <td>Workshop</td>
+                                    <td>30 Jan 2024</td>
+                                    <td><span class="status status-pending">Menunggu</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" onclick="viewTransaction('TRX-2024-0012')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>TRX-2024-0011</td>
+                                    <td>UKM U2M</td>
+                                    <td>Rp 450.000</td>
+                                    <td>ATK</td>
+                                    <td>27 Jan 2024</td>
+                                    <td><span class="status status-approved">Terverifikasi</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" onclick="viewTransaction('TRX-2024-0011')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        // Set current date
+        document.querySelector('.current-date').textContent = new Date().toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        // Tab functionality
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+        
+        // Filter transactions
+        function filterTransactions() {
+            const status = document.getElementById('filterStatus').value;
+            const ukm = document.getElementById('filterUKM').value;
+            const date = document.getElementById('filterDate').value;
+            const amount = document.getElementById('filterAmount').value;
+            
+            alert(`Filter diterapkan:\nStatus: ${status}\nUKM: ${ukm}\nTanggal: ${date}\nJumlah: ${amount}`);
+            // Implement actual filtering logic
+        }
+        
+        // Transaction actions
+        function verifyTransaction(trxId) {
+            if (confirm(`Verifikasi transaksi ${trxId}?`)) {
+                alert(`Transaksi ${trxId} berhasil diverifikasi`);
+                // Implement verification logic
+            }
+        }
+        
+        function rejectTransaction(trxId) {
+            const reason = prompt('Masukkan alasan penolakan:');
+            if (reason) {
+                alert(`Transaksi ${trxId} ditolak: ${reason}`);
+                // Implement rejection logic
+            }
+        }
+        
+        function requestRevision(trxId) {
+            const note = prompt('Masukkan catatan revisi:');
+            if (note) {
+                alert(`Revisi diminta untuk transaksi ${trxId}: ${note}`);
+                // Implement revision request logic
+            }
+        }
+        
+        function viewDocument(docName) {
+            alert(`Membuka dokumen: ${docName}`);
+            // Implement document viewer
+        }
+        
+        function viewTransaction(trxId) {
+            alert(`Melihat detail transaksi ${trxId}`);
+            // Implement transaction detail view
+        }
+        
+        function reconsiderTransaction(trxId) {
+            if (confirm(`Pertimbangkan ulang transaksi ${trxId}?`)) {
+                alert(`Transaksi ${trxId} akan ditinjau ulang`);
+                // Implement reconsider logic
+            }
+        }
+        
+        // Bulk actions
+        function bulkVerify() {
+            const selected = document.querySelectorAll('.transaction-check:checked');
+            if (selected.length === 0) {
+                alert('Pilih minimal satu transaksi');
+                return;
+            }
+            
+            if (confirm(`Verifikasi ${selected.length} transaksi terpilih?`)) {
+                alert(`${selected.length} transaksi berhasil diverifikasi`);
+                // Implement bulk verification
+            }
+        }
+        
+        function bulkReject() {
+            const selected = document.querySelectorAll('.transaction-check:checked');
+            if (selected.length === 0) {
+                alert('Pilih minimal satu transaksi');
+                return;
+            }
+            
+            const reason = prompt('Masukkan alasan penolakan untuk semua transaksi:');
+            if (reason) {
+                alert(`${selected.length} transaksi ditolak: ${reason}`);
+                // Implement bulk rejection
+            }
+        }
+        
+        function clearSelection() {
+            document.querySelectorAll('.transaction-check').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            alert('Semua pilihan dibatalkan');
+        }
+        
+        // Export transactions
+        function exportTransactions() {
+            alert('Data transaksi akan diexport ke Excel');
+            // Implement export logic
+        }
+        
+        // Initialize
+        document.getElementById('filterDate').valueAsDate = new Date();
+    </script>
+</body>
+</html>

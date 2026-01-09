@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LPJ & K - Sistem Arsip Laporan UKM</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .lpj-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        
+        .lpj-requirements {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2a5bd7;
+        }
+        
+        .requirement-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .requirement-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .requirement-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .requirement-list i {
+            color: #2a5bd7;
+        }
+        
+        .file-upload-section {
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            background-color: #f8f9fa;
+            transition: all 0.3s;
+        }
+        
+        .file-upload-section:hover {
+            border-color: #2a5bd7;
+            background-color: #f0f5ff;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: #2a5bd7;
+            margin-bottom: 15px;
+        }
+        
+        .upload-btn {
+            background-color: #2a5bd7;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .upload-btn:hover {
+            background-color: #1a3a8f;
+            transform: translateY(-2px);
+        }
+        
+        .submitted-lpj {
+            margin-top: 40px;
+        }
+        
+        .lpj-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .status-arsip {
+            background-color: #e7f7fa;
+            color: #17a2b8;
+        }
+        
+        .status-terupload {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Sistem Arsip Laporan</h2>
+                <div class="role-badge">UKM - <span class="ukm-name">U2M</span></div>
+                <p class="current-date" style="color: rgba(255,255,255,0.7); margin-top: 10px; font-size: 14px;"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard-ukm.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="pengajuan-dana.html"><i class="fas fa-hand-holding-usd"></i> Pengajuan Dana</a></li>
+                    <li><a href="laporan-keuangan.html"><i class="fas fa-file-invoice-dollar"></i> Laporan Keuangan</a></li>
+                    <li><a href="upload-bukti.html"><i class="fas fa-upload"></i> Upload Bukti Transaksi</a></li>
+                    <li><a href="lpj-dan-k.html" class="active"><i class="fas fa-clipboard-check"></i> LPJ & K</a></li>
+                </ul>
+            </nav>
+            
+            <button class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Keluar
+            </button>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="user-info">
+                    <div class="user-avatar">KU</div>
+                    <div class="user-details">
+                        <h3 class="user-name">Ketua UKM <span class="ukm-name">U2M</span></h3>
+                        <p class="user-role">UKM - <span class="ukm-info">Unit Usaha Mahasiswa</span></p>
+                    </div>
+                </div>
+                
+                <div class="page-title">
+                    <h1>LPJ & K (Laporan Pertanggungjawaban Kegiatan dan Keuangan)</h1>
+                    <p>Arsip laporan pertanggungjawaban kegiatan dan keuangan UKM</p>
+                </div>
+            </div>
+            
+            <!-- LPJ Requirements -->
+            <div class="lpj-requirements">
+                <h3><i class="fas fa-info-circle"></i> Persyaratan LPJ & K</h3>
+                <p>Sebelum mengupload LPJ & K, pastikan dokumen telah memenuhi persyaratan berikut:</p>
+                <ul class="requirement-list">
+                    <li><i class="fas fa-check-circle"></i> Format file: PDF (maks. 1GB)</li>
+                    <li><i class="fas fa-check-circle"></i> LPJ mencakup seluruh kegiatan dalam periode tertentu</li>
+                    <li><i class="fas fa-check-circle"></i> Laporan keuangan lengkap dengan rekapitulasi</li>
+                    <li><i class="fas fa-check-circle"></i> Dilampiri bukti transaksi yang telah divalidasi</li>
+                    <li><i class="fas fa-check-circle"></i> Memiliki tanda tangan Ketua UKM dan Bendahara</li>
+                    <li><i class="fas fa-check-circle"></i> Disusun sesuai template LPJ dari Biro Keuangan</li>
+                </ul>
+            </div>
+            
+            <!-- Upload LPJ Form -->
+            <div class="lpj-container">
+                <h3>Upload LPJ & K Baru</h3>
+                <p>Arsipkan Laporan Pertanggungjawaban Kegiatan dan Keuangan periode tertentu</p>
+                
+                <form id="uploadLpjForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tahunLpj">Tahun LPJ</label>
+                            <select id="tahunLpj" name="tahunLpj" required>
+                                <option value="">-- Pilih Tahun --</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025" selected>2025</option>
+                                <option value="2026">2026</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="jenisKegiatan">Jenis Kegiatan U2M</label>
+                            <select id="jenisKegiatan" name="jenisKegiatan" required>
+                                <option value="">-- Pilih Jenis Kegiatan --</option>
+                                <option value="seminar">SEMINAR & WORKSHOP</option>
+                                <option value="business">BUSINESS SHARING</option>
+                                <option value="expo">U2M EXPO</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="keteranganLpj">Keterangan Tambahan</label>
+                        <textarea id="keteranganLpj" name="keteranganLpj" rows="3" placeholder="Tambahkan keterangan mengenai LPJ yang diupload (opsional)"></textarea>
+                    </div>
+                    
+                    <!-- File Upload Section -->
+                    <div class="file-upload-section" id="fileUploadSection">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h4>Arsipkan File LPJ & K</h4>
+                        <p>Drag & drop file LPJ & K atau klik tombol di bawah</p>
+                        <p class="file-types" style="color: #666; margin: 10px 0;">Format yang didukung: PDF (Maks. 1GB)</p>
+                        
+                        <input type="file" id="lpjFile" name="lpjFile" accept=".pdf" style="display: none;">
+                        <button type="button" class="upload-btn" id="browseFileBtn">
+                            <i class="fas fa-folder-open"></i> Pilih File
+                        </button>
+                        
+                        <div id="fileName" style="margin-top: 15px; font-weight: 500; color: #1a3a8f;"></div>
+                        <div id="fileSize" style="color: #666; font-size: 14px;"></div>
+                    </div>
+                    
+                    <!-- Archive Notice -->
+                    <div class="form-group" style="margin-top: 20px;">
+                        <div class="notification" style="background-color: #e7f7fa; padding: 15px; border-radius: 8px; border-left: 4px solid #17a2b8;">
+                            <i class="fas fa-archive" style="color: #17a2b8; margin-right: 10px;"></i>
+                            <div>
+                                <strong>Fungsi Arsip:</strong> Sistem ini berfungsi sebagai arsip digital LPJ & K UKM. File yang diupload akan tersimpan secara permanen sebagai dokumentasi.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-archive"></i> Arsipkan LPJ & K
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> Reset Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Submitted LPJ History -->
+            <div class="table-container submitted-lpj">
+                <h3>Arsip LPJ & K U2M</h3>
+                <p>Daftar LPJ & K yang telah diarsipkan sebelumnya</p>
+                
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tahun</th>
+                                <th>Jenis Kegiatan</th>
+                                <th>Tanggal Upload</th>
+                                <th>File LPJ</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2025</td>
+                                <td>SEMINAR & WORKSHOP</td>
+                                <td>15 Oktober 2025</td>
+                                <td>LPJ_U2M_Seminar_2025.pdf</td>
+                                <td><span class="lpj-status status-arsip">Tersimpan</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-eye"></i> Lihat
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-download"></i> Unduh
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2025</td>
+                                <td>U2M EXPO</td>
+                                <td>5 Juli 2025</td>
+                                <td>LPJ_U2M_Expo_2025.pdf</td>
+                                <td><span class="lpj-status status-arsip">Tersimpan</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-eye"></i> Lihat
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-download"></i> Unduh
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2025</td>
+                                <td>BUSINESS SHARING</td>
+                                <td>10 Juni 2025</td>
+                                <td>LPJ_U2M_Business_Sharing_2025.pdf</td>
+                                <td><span class="lpj-status status-arsip">Tersimpan</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-eye"></i> Lihat
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-download"></i> Unduh
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2024</td>
+                                <td>U2M EXPO</td>
+                                <td>5 Desember 2024</td>
+                                <td>LPJ_U2M_Expo_2024.pdf</td>
+                                <td><span class="lpj-status status-arsip">Tersimpan</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-eye"></i> Lihat
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-download"></i> Unduh
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                    <div class="pagination-info">
+                        Menampilkan 1-4 dari 8 LPJ
+                    </div>
+                    <div class="pagination">
+                        <button class="btn btn-secondary btn-sm" disabled><i class="fas fa-chevron-left"></i></button>
+                        <span style="margin: 0 10px;">Halaman 1</span>
+                        <button class="btn btn-secondary btn-sm"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        // File upload functionality
+        const lpjFile = document.getElementById('lpjFile');
+        const browseFileBtn = document.getElementById('browseFileBtn');
+        const fileUploadSection = document.getElementById('fileUploadSection');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        
+        browseFileBtn.addEventListener('click', function() {
+            lpjFile.click();
+        });
+        
+        fileUploadSection.addEventListener('click', function(e) {
+            if (e.target !== browseFileBtn && !browseFileBtn.contains(e.target)) {
+                lpjFile.click();
+            }
+        });
+        
+        fileUploadSection.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            fileUploadSection.style.borderColor = '#2a5bd7';
+            fileUploadSection.style.backgroundColor = '#f0f5ff';
+        });
+        
+        fileUploadSection.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            fileUploadSection.style.borderColor = '#dee2e6';
+            fileUploadSection.style.backgroundColor = '#f8f9fa';
+        });
+        
+        fileUploadSection.addEventListener('drop', function(e) {
+            e.preventDefault();
+            fileUploadSection.style.borderColor = '#dee2e6';
+            fileUploadSection.style.backgroundColor = '#f8f9fa';
+            
+            if (e.dataTransfer.files.length) {
+                lpjFile.files = e.dataTransfer.files;
+                updateFileInfo();
+            }
+        });
+        
+        lpjFile.addEventListener('change', updateFileInfo);
+        
+        function updateFileInfo() {
+            if (lpjFile.files.length > 0) {
+                const file = lpjFile.files[0];
+                fileName.textContent = `File: ${file.name}`;
+                fileName.style.color = '#28a745';
+                
+                // Calculate file size
+                const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+                fileSize.textContent = `Ukuran: ${sizeInMB} MB`;
+                
+                // Check if file is PDF
+                if (file.type !== 'application/pdf') {
+                    alert('Hanya file PDF yang diperbolehkan!');
+                    lpjFile.value = '';
+                    fileName.textContent = '';
+                    fileSize.textContent = '';
+                }
+                
+                // Check file size (max 1GB = 1024 MB)
+                if (file.size > 1024 * 1024 * 1024) {
+                    alert('File terlalu besar! Maksimal 1GB.');
+                    lpjFile.value = '';
+                    fileName.textContent = '';
+                    fileSize.textContent = '';
+                }
+            } else {
+                fileName.textContent = '';
+                fileSize.textContent = '';
+            }
+        }
+        
+        // Form submission
+        document.getElementById('uploadLpjForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const tahun = document.getElementById('tahunLpj').value;
+            const kegiatan = document.getElementById('jenisKegiatan').value;
+            const kegiatanText = document.getElementById('jenisKegiatan').options[document.getElementById('jenisKegiatan').selectedIndex].text;
+            
+            if (!lpjFile.files.length) {
+                alert('Harap pilih file LPJ & K!');
+                return;
+            }
+            
+            if (!tahun || !kegiatan) {
+                alert('Harap lengkapi tahun dan jenis kegiatan!');
+                return;
+            }
+            
+            // Simulate file upload
+            const file = lpjFile.files[0];
+            const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+            
+            if (confirm(`Apakah Anda yakin mengarsipkan LPJ & K untuk tahun ${tahun} - ${kegiatanText}?\n\nFile: ${file.name}\nUkuran: ${sizeInMB} MB`)) {
+                alert('LPJ & K berhasil diarsipkan! File telah tersimpan dalam sistem.');
+                
+                // Reset form
+                this.reset();
+                fileName.textContent = '';
+                fileSize.textContent = '';
+                
+                // Set default year to 2025
+                document.getElementById('tahunLpj').value = '2025';
+                
+                // Simulate adding to table
+                setTimeout(() => {
+                    alert('LPJ telah ditambahkan ke arsip. Anda dapat melihatnya di tabel arsip.');
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>

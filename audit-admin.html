@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Keuangan - Sistem Transparansi Dana UKM</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Audit Specific Styles */
+        .audit-header {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .audit-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .audit-stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-top: 4px solid #1a3a8f;
+        }
+        
+        .audit-stat-card.warning {
+            border-top-color: #FF9800;
+        }
+        
+        .audit-stat-card.danger {
+            border-top-color: #f44336;
+        }
+        
+        .audit-stat-card.success {
+            border-top-color: #4CAF50;
+        }
+        
+        .audit-stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a3a8f;
+            margin-bottom: 5px;
+        }
+        
+        .audit-stat-card.warning .audit-stat-value {
+            color: #FF9800;
+        }
+        
+        .audit-stat-card.danger .audit-stat-value {
+            color: #f44336;
+        }
+        
+        .audit-stat-card.success .audit-stat-value {
+            color: #4CAF50;
+        }
+        
+        .audit-actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .audit-schedule {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .schedule-list {
+            margin-top: 20px;
+        }
+        
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .schedule-item:last-child {
+            border-bottom: none;
+        }
+        
+        .schedule-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .schedule-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-upcoming {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-inprogress {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .audit-findings {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .finding-item {
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #FF9800;
+        }
+        
+        .finding-item.critical {
+            border-left-color: #f44336;
+            background-color: #fff5f5;
+        }
+        
+        .finding-item.major {
+            border-left-color: #FF9800;
+            background-color: #fff9e6;
+        }
+        
+        .finding-item.minor {
+            border-left-color: #2196F3;
+            background-color: #f0f8ff;
+        }
+        
+        .finding-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .finding-title {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .finding-severity {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .severity-critical {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .severity-major {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .severity-minor {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .finding-details {
+            margin-bottom: 15px;
+            color: #666;
+        }
+        
+        .finding-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .audit-reports {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .report-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .report-title {
+            font-weight: 600;
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .report-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .report-score {
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .score-excellent {
+            color: #4CAF50;
+        }
+        
+        .score-good {
+            color: #2196F3;
+        }
+        
+        .score-fair {
+            color: #FF9800;
+        }
+        
+        .score-poor {
+            color: #f44336;
+        }
+        
+        .audit-checklist {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+        
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .checklist-content {
+            flex: 1;
+        }
+        
+        .checklist-status {
+            font-size: 14px;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .audit-actions {
+                flex-direction: column;
+            }
+            
+            .finding-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .finding-actions {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Sistem Transparansi Dana</h2>
+                <div class="role-badge">Admin Keuangan</div>
+                <p class="current-date"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard-admin.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="kelola-ukm-admin.html"><i class="fas fa-users"></i> Kelola UKM</a></li>
+                    <li><a href="manajemen-dana-admin.html"><i class="fas fa-money-bill-wave"></i> Manajemen Dana</a></li>
+                    <li><a href="pengajuan-proposal-admin.html"><i class="fas fa-file-contract"></i> Pengajuan Proposal</a></li>
+                    <li><a href="verifikasi-transaksi-admin.html"><i class="fas fa-check-circle"></i> Verifikasi Transaksi</a></li>
+                    <li><a href="laporan-keuangan-admin.html"><i class="fas fa-chart-bar"></i> Laporan Keuangan</a></li>
+                    <li><a href="arsip-admin.html"><i class="fas fa-archive"></i> Arsip & Dokumen</a></li>
+                    <li><a href="audit-admin.html" class="active"><i class="fas fa-search"></i> Audit Keuangan</a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="user-info">
+                    <div class="user-avatar">AD</div>
+                    <div class="user-details">
+                        <h3 class="user-name">Admin Keuangan</h3>
+                        <p class="user-role">Admin Keuangan - ITB STIKOM Bali</p>
+                    </div>
+                </div>
+                
+                <div class="page-title">
+                    <h1>Audit Keuangan UKM</h1>
+                    <p>Pemeriksaan dan evaluasi sistem keuangan Unit Kegiatan Mahasiswa</p>
+                </div>
+            </div>
+            
+            <!-- Audit Stats -->
+            <div class="audit-stats">
+                <div class="audit-stat-card">
+                    <div class="audit-stat-value">15</div>
+                    <div class="audit-stat-label">Audit Aktif</div>
+                </div>
+                <div class="audit-stat-card warning">
+                    <div class="audit-stat-value">7</div>
+                    <div class="audit-stat-label">Temuan Kritis</div>
+                </div>
+                <div class="audit-stat-card danger">
+                    <div class="audit-stat-value">3</div>
+                    <div class="audit-stat-label">UKM Bermasalah</div>
+                </div>
+                <div class="audit-stat-card success">
+                    <div class="audit-stat-value">85%</div>
+                    <div class="audit-stat-label">Kepatuhan</div>
+                </div>
+            </div>
+            
+            <!-- Audit Actions -->
+            <div class="audit-actions">
+                <button class="btn btn-primary" onclick="startNewAudit()">
+                    <i class="fas fa-plus"></i> Audit Baru
+                </button>
+                <button class="btn btn-success" onclick="generateAuditReport()">
+                    <i class="fas fa-file-alt"></i> Laporan Audit
+                </button>
+                <button class="btn btn-warning" onclick="scheduleAudit()">
+                    <i class="fas fa-calendar-plus"></i> Jadwalkan Audit
+                </button>
+                <button class="btn btn-danger" onclick="viewCriticalFindings()">
+                    <i class="fas fa-exclamation-triangle"></i> Temuan Kritis
+                </button>
+                <button class="btn btn-secondary" onclick="auditSettings()">
+                    <i class="fas fa-cog"></i> Pengaturan Audit
+                </button>
+            </div>
+            
+            <!-- Audit Schedule -->
+            <div class="audit-schedule">
+                <h3>Jadwal Audit Mendatang</h3>
+                <div class="schedule-list">
+                    <div class="schedule-item">
+                        <div class="schedule-info">
+                            <div>
+                                <div style="font-weight: 500;">Audit UKM U2M - Q1 2024</div>
+                                <small>Auditor: Tim Keuangan • Periode: Jan-Mar 2024</small>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="schedule-status status-inprogress">Sedang Berjalan</span>
+                            <button class="btn btn-sm btn-primary" onclick="viewAudit('u2m-q1')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="schedule-item">
+                        <div class="schedule-info">
+                            <div>
+                                <div style="font-weight: 500;">Audit UKM Robotika</div>
+                                <small>Auditor: Tim Keuangan • Tanggal: 15 Feb 2024</small>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="schedule-status status-upcoming">Akan Datang</span>
+                            <button class="btn btn-sm btn-primary" onclick="viewAudit('robotika')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="schedule-item">
+                        <div class="schedule-info">
+                            <div>
+                                <div style="font-weight: 500;">Audit Tahunan UKM Multimedia</div>
+                                <small>Auditor: Tim Keuangan • Tanggal: 1 Mar 2024</small>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="schedule-status status-upcoming">Akan Datang</span>
+                            <button class="btn btn-sm btn-primary" onclick="viewAudit('multimedia')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="schedule-item">
+                        <div class="schedule-info">
+                            <div>
+                                <div style="font-weight: 500;">Audit UKM Teater - 2023</div>
+                                <small>Auditor: Tim Keuangan • Selesai: 20 Des 2023</small>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="schedule-status status-completed">Selesai</span>
+                            <button class="btn btn-sm btn-info" onclick="viewReport('teater-2023')">
+                                <i class="fas fa-file-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Critical Findings -->
+            <div class="audit-findings">
+                <div class="section-header">
+                    <h3>Temuan Audit Kritis</h3>
+                    <button class="btn btn-secondary" onclick="exportFindings()">
+                        <i class="fas fa-download"></i> Export Temuan
+                    </button>
+                </div>
+                
+                <div class="finding-item critical">
+                    <div class="finding-header">
+                        <div class="finding-title">Ketidaksesuaian Anggaran UKM Robotika</div>
+                        <span class="finding-severity severity-critical">KRITIS</span>
+                    </div>
+                    <div class="finding-details">
+                        Pengeluaran untuk komponen elektronik melebihi anggaran yang disetujui sebesar 45%. 
+                        Terdapat transaksi senilai Rp 3.200.000 tanpa bukti dokumen yang memadai.
+                    </div>
+                    <div class="finding-actions">
+                        <button class="btn btn-danger btn-sm" onclick="assignInvestigation('finding1')">
+                            <i class="fas fa-user-check"></i> Tugaskan Investigasi
+                        </button>
+                        <button class="btn btn-warning btn-sm" onclick="requestAction('finding1')">
+                            <i class="fas fa-exclamation"></i> Minta Tindakan
+                        </button>
+                        <button class="btn btn-info btn-sm" onclick="viewDetails('finding1')">
+                            <i class="fas fa-info-circle"></i> Detail
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="finding-item major">
+                    <div class="finding-header">
+                        <div class="finding-title">Dokumen LPJ Tidak Lengkap - UKM Teater</div>
+                        <span class="finding-severity severity-major">MAYOR</span>
+                    </div>
+                    <div class="finding-details">
+                        Laporan Pertanggungjawaban kegiatan pentas seni tidak dilengkapi dengan bukti transaksi 
+                        senilai Rp 1.500.000. Tenggat waktu perbaikan: 14 hari.
+                    </div>
+                    <div class="finding-actions">
+                        <button class="btn btn-warning btn-sm" onclick="sendReminder('finding2')">
+                            <i class="fas fa-bell"></i> Kirim Pengingat
+                        </button>
+                        <button class="btn btn-info btn-sm" onclick="viewDetails('finding2')">
+                            <i class="fas fa-info-circle"></i> Detail
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="finding-item minor">
+                    <div class="finding-header">
+                        <div class="finding-title">Format Laporan Tidak Standar - UKM Multimedia</div>
+                        <span class="finding-severity severity-minor">MINOR</span>
+                    </div>
+                    <div class="finding-details">
+                        Laporan keuangan bulanan tidak menggunakan format standar yang ditetapkan. 
+                        Perlu penyesuaian template dan pelatihan singkat.
+                    </div>
+                    <div class="finding-actions">
+                        <button class="btn btn-primary btn-sm" onclick="provideTemplate('finding3')">
+                            <i class="fas fa-file-download"></i> Beri Template
+                        </button>
+                        <button class="btn btn-info btn-sm" onclick="viewDetails('finding3')">
+                            <i class="fas fa-info-circle"></i> Detail
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Audit Reports -->
+            <div class="audit-reports">
+                <div class="report-card">
+                    <div class="report-title">Laporan Audit UKM U2M 2023</div>
+                    <div class="report-meta">
+                        <div><i class="fas fa-calendar"></i> Periode: Jan - Des 2023</div>
+                        <div><i class="fas fa-user"></i> Auditor: Tim Keuangan</div>
+                        <div><i class="fas fa-check-circle"></i> Status: Disetujui</div>
+                    </div>
+                    <div class="report-score score-excellent">92%</div>
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <span class="status status-approved">Kinerja Sangat Baik</span>
+                    </div>
+                    <div class="report-actions" style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary btn-sm" onclick="viewReport('u2m-2023')">
+                            <i class="fas fa-eye"></i> Lihat
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="downloadReport('u2m-2023')">
+                            <i class="fas fa-download"></i> Unduh
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="report-card">
+                    <div class="report-title">Laporan Audit UKM Robotika Q4 2023</div>
+                    <div class="report-meta">
+                        <div><i class="fas fa-calendar"></i> Periode: Okt - Des 2023</div>
+                        <div><i class="fas fa-user"></i> Auditor: Tim Keuangan</div>
+                        <div><i class="fas fa-exclamation-triangle"></i> Status: Perlu Perbaikan</div>
+                    </div>
+                    <div class="report-score score-fair">68%</div>
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <span class="status status-warning">Perlu Perhatian</span>
+                    </div>
+                    <div class="report-actions" style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary btn-sm" onclick="viewReport('robotika-q4')">
+                            <i class="fas fa-eye"></i> Lihat
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="downloadReport('robotika-q4')">
+                            <i class="fas fa-download"></i> Unduh
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="report-card">
+                    <div class="report-title">Laporan Audit UKM Multimedia 2023</div>
+                    <div class="report-meta">
+                        <div><i class="fas fa-calendar"></i> Periode: Jan - Des 2023</div>
+                        <div><i class="fas fa-user"></i> Auditor: Tim Keuangan</div>
+                        <div><i class="fas fa-check-circle"></i> Status: Disetujui</div>
+                    </div>
+                    <div class="report-score score-good">85%</div>
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <span class="status status-approved">Kinerja Baik</span>
+                    </div>
+                    <div class="report-actions" style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary btn-sm" onclick="viewReport('multimedia-2023')">
+                            <i class="fas fa-eye"></i> Lihat
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="downloadReport('multimedia-2023')">
+                            <i class="fas fa-download"></i> Unduh
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Audit Checklist -->
+            <div class="audit-checklist">
+                <h3>Checklist Audit Keuangan</h3>
+                <div class="checklist-list">
+                    <div class="checklist-item">
+                        <input type="checkbox" class="checklist-checkbox" id="check1" checked>
+                        <div class="checklist-content">
+                            <div style="font-weight: 500;">Validasi dokumen pendukung transaksi</div>
+                            <small>Memastikan semua transaksi memiliki bukti dokumen yang valid</small>
+                        </div>
+                        <span class="checklist-status status-approved">Selesai</span>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" class="checklist-checkbox" id="check2" checked>
+                        <div class="checklist-content">
+                            <div style="font-weight: 500;">Verifikasi kesesuaian dengan anggaran</div>
+                            <small>Memeriksa apakah pengeluaran sesuai dengan anggaran yang disetujui</small>
+                        </div>
+                        <span class="checklist-status status-approved">Selesai</span>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" class="checklist-checkbox" id="check3">
+                        <div class="checklist-content">
+                            <div style="font-weight: 500;">Review laporan keuangan bulanan</div>
+                            <small>Memeriksa kelengkapan dan akurasi laporan keuangan</small>
+                        </div>
+                        <span class="checklist-status status-pending">Dalam Proses</span>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <input type="checkbox" class="checklist-checkbox" id="check4">
+                        <div class="checklist-content">
+                            <div style="font-weight: 500;">Evaluasi sistem pengendalian internal</div>
+                            <small>Menilai efektivitas sistem pengendalian keuangan UKM</small>
+                        </div>
+                        <span class="checklist-status status-pending">Belum Dimulai</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        // Set current date
+        document.querySelector('.current-date').textContent = new Date().toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        // Audit functions
+        function startNewAudit() {
+            alert('Memulai audit baru...');
+            // Implement new audit logic
+        }
+        
+        function generateAuditReport() {
+            alert('Membuat laporan audit...');
+            // Implement report generation
+        }
+        
+        function scheduleAudit() {
+            alert('Menjadwalkan audit...');
+            // Implement schedule logic
+        }
+        
+        function viewCriticalFindings() {
+            alert('Menampilkan temuan kritis...');
+            // Implement critical findings view
+        }
+        
+        function auditSettings() {
+            alert('Membuka pengaturan audit...');
+            // Implement settings logic
+        }
+        
+        function viewAudit(auditId) {
+            alert(`Melihat audit: ${auditId}`);
+            // Implement audit view
+        }
+        
+        function viewReport(reportId) {
+            alert(`Melihat laporan: ${reportId}`);
+            // Implement report view
+        }
+        
+        function downloadReport(reportId) {
+            alert(`Mengunduh laporan: ${reportId}`);
+            // Implement download logic
+        }
+        
+        // Findings functions
+        function assignInvestigation(findingId) {
+            const investigator = prompt('Tugaskan investigasi kepada:');
+            if (investigator) {
+                alert(`Investigasi untuk temuan ${findingId} ditugaskan kepada: ${investigator}`);
+                // Implement assignment logic
+            }
+        }
+        
+        function requestAction(findingId) {
+            const action = prompt('Minta tindakan untuk:');
+            if (action) {
+                alert(`Tindakan diminta untuk temuan ${findingId}: ${action}`);
+                // Implement action request
+            }
+        }
+        
+        function viewDetails(findingId) {
+            alert(`Menampilkan detail temuan: ${findingId}`);
+            // Implement detail view
+        }
+        
+        function sendReminder(findingId) {
+            alert(`Mengirim pengingat untuk temuan: ${findingId}`);
+            // Implement reminder logic
+        }
+        
+        function provideTemplate(findingId) {
+            alert(`Menyediakan template untuk temuan: ${findingId}`);
+            // Implement template provision
+        }
+        
+        function exportFindings() {
+            alert('Mengekspor temuan audit...');
+            // Implement export logic
+        }
+        
+        // Checklist functionality
+        document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const checklistItem = this.closest('.checklist-item');
+                const statusSpan = checklistItem.querySelector('.checklist-status');
+                
+                if (this.checked) {
+                    statusSpan.textContent = 'Selesai';
+                    statusSpan.className = 'checklist-status status-approved';
+                } else {
+                    statusSpan.textContent = 'Belum Dimulai';
+                    statusSpan.className = 'checklist-status status-pending';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

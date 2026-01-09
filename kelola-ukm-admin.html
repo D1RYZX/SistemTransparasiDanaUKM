@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola UKM - Sistem Transparansi Dana UKM</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Sistem Transparansi Dana</h2>
+                <div class="role-badge">Admin Keuangan</div>
+                <p class="current-date"></p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard-admin.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="kelola-ukm-admin.html" class="active"><i class="fas fa-users"></i> Kelola UKM</a></li>
+                    <li><a href="manajemen-dana-admin.html"><i class="fas fa-money-bill-wave"></i> Manajemen Dana</a></li>
+                    <li><a href="pengajuan-proposal-admin.html"><i class="fas fa-file-contract"></i> Pengajuan Proposal</a></li>
+                    <li><a href="verifikasi-transaksi-admin.html"><i class="fas fa-check-circle"></i> Verifikasi Transaksi</a></li>
+                    <li><a href="laporan-keuangan-admin.html"><i class="fas fa-chart-bar"></i> Laporan Keuangan</a></li>
+                    <li><a href="arsip-admin.html"><i class="fas fa-archive"></i> Arsip & Dokumen</a></li>
+                    <li><a href="audit-admin.html"><i class="fas fa-search"></i> Audit Keuangan</a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="user-info">
+                    <div class="user-avatar">AD</div>
+                    <div class="user-details">
+                        <h3 class="user-name">Admin Keuangan</h3>
+                        <p class="user-role">Admin Keuangan - ITB STIKOM Bali</p>
+                    </div>
+                </div>
+                
+                <div class="page-title">
+                    <h1>Kelola Unit Kegiatan Mahasiswa</h1>
+                    <p>Manajemen data dan informasi seluruh UKM di ITB STIKOM Bali</p>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-bar">
+                <button class="btn btn-primary" onclick="tambahUKM()">
+                    <i class="fas fa-plus"></i> Tambah UKM Baru
+                </button>
+                <button class="btn btn-success" onclick="exportData()">
+                    <i class="fas fa-download"></i> Export Data
+                </button>
+                <button class="btn btn-warning" onclick="importData()">
+                    <i class="fas fa-upload"></i> Import Data
+                </button>
+                <div class="search-box">
+                    <input type="text" placeholder="Cari UKM..." id="searchUKM">
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- UKM List -->
+            <div class="table-container">
+                <h3>Daftar Unit Kegiatan Mahasiswa</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama UKM</th>
+                                <th>Ketua UKM</th>
+                                <th>Pembina</th>
+                                <th>Anggota</th>
+                                <th>Dana Tahunan</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>
+                                    <div class="ukm-info">
+                                        <strong>U2M (Unit Usaha Mahasiswa)</strong>
+                                        <small>Bidang Kewirausahaan</small>
+                                    </div>
+                                </td>
+                                <td>I Gede Adi Surya</td>
+                                <td>Dr. Komang Ayu</td>
+                                <td>25</td>
+                                <td>Rp 18.500.000</td>
+                                <td><span class="status status-active">Aktif</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>
+                                    <div class="ukm-info">
+                                        <strong>UKM Robotika</strong>
+                                        <small>Bidang Teknologi</small>
+                                    </div>
+                                </td>
+                                <td>Putu Wirawan</td>
+                                <td>Dr. Wayan Suarna</td>
+                                <td>18</td>
+                                <td>Rp 15.000.000</td>
+                                <td><span class="status status-active">Aktif</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>
+                                    <div class="ukm-info">
+                                        <strong>UKM Multimedia</strong>
+                                        <small>Bidang Kreatif</small>
+                                    </div>
+                                </td>
+                                <td>Kadek Sudiarta</td>
+                                <td>I Gusti Made</td>
+                                <td>22</td>
+                                <td>Rp 12.300.000</td>
+                                <td><span class="status status-active">Aktif</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>
+                                    <div class="ukm-info">
+                                        <strong>UKM Teater</strong>
+                                        <small>Bidang Seni</small>
+                                    </div>
+                                </td>
+                                <td>Ni Luh Putu</td>
+                                <td>Dr. Ketut Artawan</td>
+                                <td>15</td>
+                                <td>Rp 8.500.000</td>
+                                <td><span class="status status-active">Aktif</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>
+                                    <div class="ukm-info">
+                                        <strong>UKM Fotografi</strong>
+                                        <small>Bidang Seni Visual</small>
+                                    </div>
+                                </td>
+                                <td>Made Wiratha</td>
+                                <td>I Wayan Darsana</td>
+                                <td>20</td>
+                                <td>Rp 10.000.000</td>
+                                <td><span class="status status-inactive">Non-Aktif</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="pagination">
+                    <button class="btn btn-secondary"><i class="fas fa-chevron-left"></i></button>
+                    <span class="page-number active">1</span>
+                    <span class="page-number">2</span>
+                    <span class="page-number">3</span>
+                    <button class="btn btn-secondary"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
+            <!-- Statistics -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Total UKM</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-university"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">18</div>
+                    <p class="card-desc">Unit Kegiatan Mahasiswa</p>
+                </div>
+                
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3>UKM Aktif</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">16</div>
+                    <p class="card-desc">Sedang beroperasi</p>
+                </div>
+                
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3>UKM Non-Aktif</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-pause-circle"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">2</div>
+                    <p class="card-desc">Perlu evaluasi</p>
+                </div>
+                
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3>Total Anggota</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">325</div>
+                    <p class="card-desc">Mahasiswa aktif</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        // Set current date
+        document.querySelector('.current-date').textContent = new Date().toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        function tambahUKM() {
+            alert('Fitur tambah UKM baru akan dibuka');
+            // Implementasi modal/form tambah UKM
+        }
+        
+        function exportData() {
+            alert('Data UKM akan diexport ke Excel');
+        }
+        
+        function importData() {
+            alert('Fitur import data UKM');
+        }
+    </script>
+</body>
+</html>
