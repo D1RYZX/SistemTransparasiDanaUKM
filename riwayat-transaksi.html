@@ -4,10 +4,325 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Riwayat Transaksi - Sistem Transparansi Dana UKM</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Base Styles from Original Admin Dashboard */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: #f5f7fa;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: white;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .current-date {
+            font-size: 12px;
+            opacity: 0.8;
+            color: rgba(255,255,255,0.7) !important;
+            margin-top: 10px;
+        }
+        
+        .sidebar-nav ul {
+            list-style: none;
+        }
+        
+        .sidebar-nav li {
+            margin-bottom: 2px;
+        }
+        
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .sidebar-nav a:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .sidebar-nav a.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border-left: 4px solid #4fc3f7;
+        }
+        
+        .sidebar-nav i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            padding: 20px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .logout-btn i {
+            margin-right: 8px;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 20px;
+            width: calc(100% - 260px);
+            min-height: 100vh;
+            background: #f5f7fa;
+        }
+        
+        .top-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .user-name {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .user-role {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .page-title h1 {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+        
+        .page-title p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        /* Table Container */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .table-container h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            width: 100%;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+        
+        thead {
+            background: #f8f9fa;
+        }
+        
+        th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            white-space: nowrap;
+        }
+        
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        /* Status Badges */
+        .status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        /* Button Styles */
+        .btn-action-pembina {
+            padding: 8px 15px;
+            background: #2a5bd7;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-action-pembina:hover {
+            background: #1a3a8f;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            .main-content {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                margin-bottom: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 15px;
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .user-info {
+                margin-bottom: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .page-title h1 {
+                font-size: 20px;
+            }
+        }
+        
         /* Tema khusus Riwayat Transaksi */
         .transaction-header-pembina {
             background: linear-gradient(135deg, #1a3a8f 0%, #2a5bd7 100%);
@@ -99,11 +414,34 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
         }
         
+        .filter-title-pembina {
+            color: #1a3a8f;
+            font-size: 18px;
+            margin: 0 0 15px 0;
+            font-weight: 600;
+        }
+        
         .filter-grid-pembina {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
             align-items: end;
+        }
+        
+        .filter-label-pembina {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .filter-select-pembina {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
         }
         
         .btn-search-pembina {
@@ -115,6 +453,9 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .btn-search-pembina:hover {
@@ -181,21 +522,23 @@
             .filter-grid-pembina {
                 grid-template-columns: 1fr;
             }
+            
+            .transaction-title-pembina {
+                font-size: 20px;
+            }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <button class="menu-toggle">
-        <i class="fas fa-bars"></i>
-    </button>
-    
     <div class="dashboard-container">
         <!-- Sidebar -->
-        <aside class="sidebar sidebar-pembina">
+        <aside class="sidebar">
             <div class="sidebar-header">
                 <h2>Sistem Transparansi Dana</h2>
-                <div class="role-badge pembina-badge">Pembina UKM <span class="ukm-name">U2M</span></div>
-                <p class="current-date" style="color: rgba(255,255,255,0.7); margin-top: 10px; font-size: 14px;"></p>
+                <div class="role-badge">Pembina UKM <span class="ukm-name">U2M</span></div>
+                <p class="current-date"></p>
             </div>
             
             <nav class="sidebar-nav">
@@ -203,13 +546,16 @@
                     <li><a href="dashboard-pembina.html"><i class="fas fa-home"></i> Dashboard</a></li>
                     <li><a href="laporan-ormawa.html"><i class="fas fa-chart-bar"></i> Informasi UKM</a></li>
                     <li><a href="history-lpj-pembina.html"><i class="fas fa-history"></i> Review LPJ & K</a></li>
-                    <li><a href="riwayat-transaksi.html" class="active active-pembina"><i class="fas fa-exchange-alt"></i> Riwayat Transaksi</a></li>
+                    <li><a href="riwayat-transaksi.html" class="active"><i class="fas fa-exchange-alt"></i> Riwayat Transaksi</a></li>
+                    <li><a href="log-audit.html"><i class="fas fa-search"></i> Log Audit</a></li>
                 </ul>
             </nav>
             
-            <button class="logout-btn btn-pembina">
-                <i class="fas fa-sign-out-alt"></i> Keluar
-            </button>
+            <div class="sidebar-footer">
+                <button class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </button>
+            </div>
         </aside>
         
         <!-- Main Content -->
@@ -217,7 +563,7 @@
             <!-- Top Bar -->
             <div class="top-bar">
                 <div class="user-info">
-                    <div class="user-avatar pembina-avatar">PU</div>
+                    <div class="user-avatar">PU</div>
                     <div class="user-details">
                         <h3 class="user-name">Pembina UKM <span class="ukm-name">U2M</span></h3>
                         <p class="user-role">Pembina UKM - ITB STIKOM Bali</p>
@@ -272,7 +618,7 @@
                 <div class="filter-grid-pembina">
                     <div>
                         <label class="filter-label-pembina">Tahun</label>
-                        <select class="filter-select-pembina">
+                        <select class="filter-select-pembina" id="filterYear">
                             <option value="2025" selected>2025</option>
                             <option value="2024">2024</option>
                             <option value="2023">2023</option>
@@ -280,7 +626,7 @@
                     </div>
                     <div>
                         <label class="filter-label-pembina">Bulan</label>
-                        <select class="filter-select-pembina">
+                        <select class="filter-select-pembina" id="filterMonth">
                             <option value="all">Semua Bulan</option>
                             <option value="01">Januari</option>
                             <option value="02">Februari</option>
@@ -291,14 +637,14 @@
                     </div>
                     <div>
                         <label class="filter-label-pembina">Jenis</label>
-                        <select class="filter-select-pembina">
+                        <select class="filter-select-pembina" id="filterType">
                             <option value="all">Semua Jenis</option>
                             <option value="income">Pemasukan</option>
                             <option value="expense">Pengeluaran</option>
                         </select>
                     </div>
                     <div>
-                        <button class="btn-search-pembina">
+                        <button class="btn-search-pembina" id="searchTransactions">
                             <i class="fas fa-search"></i> Cari Transaksi
                         </button>
                     </div>
@@ -329,7 +675,7 @@
                                 <td>Pengeluaran</td>
                                 <td class="amount-expense">- Rp 450.000</td>
                                 <td><span class="status status-approved">Disetujui</span></td>
-                                <td><button class="btn-action-pembina"><i class="fas fa-eye"></i> Lihat</button></td>
+                                <td><button class="btn-action-pembina btn-view-detail" data-id="TRX015"><i class="fas fa-eye"></i> Lihat</button></td>
                             </tr>
                             <tr>
                                 <td>20 Okt 2025</td>
@@ -338,7 +684,7 @@
                                 <td>Pengeluaran</td>
                                 <td class="amount-expense">- Rp 1.200.000</td>
                                 <td><span class="status status-approved">Disetujui</span></td>
-                                <td><button class="btn-action-pembina"><i class="fas fa-eye"></i> Lihat</button></td>
+                                <td><button class="btn-action-pembina btn-view-detail" data-id="TRX014"><i class="fas fa-eye"></i> Lihat</button></td>
                             </tr>
                             <tr>
                                 <td>18 Okt 2025</td>
@@ -347,7 +693,7 @@
                                 <td>Pemasukan</td>
                                 <td class="amount-income">+ Rp 5.000.000</td>
                                 <td><span class="status status-approved">Disetujui</span></td>
-                                <td><button class="btn-action-pembina"><i class="fas fa-eye"></i> Lihat</button></td>
+                                <td><button class="btn-action-pembina btn-view-detail" data-id="TRX013"><i class="fas fa-eye"></i> Lihat</button></td>
                             </tr>
                             <tr>
                                 <td>15 Okt 2025</td>
@@ -356,7 +702,7 @@
                                 <td>Pengeluaran</td>
                                 <td class="amount-expense">- Rp 350.000</td>
                                 <td><span class="status status-approved">Disetujui</span></td>
-                                <td><button class="btn-action-pembina"><i class="fas fa-eye"></i> Lihat</button></td>
+                                <td><button class="btn-action-pembina btn-view-detail" data-id="TRX012"><i class="fas fa-eye"></i> Lihat</button></td>
                             </tr>
                             <tr>
                                 <td>10 Okt 2025</td>
@@ -365,31 +711,155 @@
                                 <td>Pengeluaran</td>
                                 <td class="amount-expense">- Rp 280.000</td>
                                 <td><span class="status status-approved">Disetujui</span></td>
-                                <td><button class="btn-action-pembina"><i class="fas fa-eye"></i> Lihat</button></td>
+                                <td><button class="btn-action-pembina btn-view-detail" data-id="TRX011"><i class="fas fa-eye"></i> Lihat</button></td>
+                            </tr>
+                            <tr>
+                                <td>5 Okt 2025</td>
+                                <td>TRX010</td>
+                                <td>Pembelian alat tulis - BUSINESS SHARING</td>
+                                <td>Pengeluaran</td>
+                                <td class="amount-expense">- Rp 150.000</td>
+                                <td><span class="status status-approved">Disetujui</span></td>
+                                <td><button class="btn-action-pembina btn-view-detail" data-id="TRX010"><i class="fas fa-eye"></i> Lihat</button></td>
+                            </tr>
+                            <tr>
+                                <td>1 Okt 2025</td>
+                                <td>TRX009</td>
+                                <td>Biaya konsumsi KOPI SORE</td>
+                                <td>Pengeluaran</td>
+                                <td class="amount-expense">- Rp 120.000</td>
+                                <td><span class="status status-approved">Disetujui</span></td>
+                                <td><button class="btn-action-pembina btn-view-detail" data-id="TRX009"><i class="fas fa-eye"></i> Lihat</button></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
+            
+            <!-- Pagination -->
+            <div class="filter-card-pembina" style="text-align: center;">
+                <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+                    <button class="btn-action-pembina" style="background: #6c757d;">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span style="color: #555; font-weight: 500;">Halaman 1 dari 3</span>
+                    <button class="btn-action-pembina" style="background: #2a5bd7;">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
         </main>
     </div>
     
-    <script src="script.js"></script>
     <script>
+        // Set current date
+        document.querySelector('.current-date').textContent = new Date().toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        // Fungsi logout sederhana
+        function logoutUser() {
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                // Hapus data sesi
+                localStorage.removeItem('user');
+                localStorage.removeItem('loginTime');
+                
+                // Redirect ke halaman login
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // Atur event listener
         document.addEventListener('DOMContentLoaded', function() {
+            // Logout
+            const logoutBtn = document.querySelector('.logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logoutUser();
+                });
+            }
+            
+            // User data
             const userData = JSON.parse(localStorage.getItem('user'));
             if (userData && userData.roleType === 'pembina') {
                 document.querySelectorAll('.ukm-name').forEach(el => {
                     el.textContent = userData.ukm;
                 });
-                
-                const currentDateElement = document.querySelector('.current-date');
-                if (currentDateElement) {
-                    const now = new Date();
-                    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                    currentDateElement.textContent = now.toLocaleDateString('id-ID', options);
-                }
             }
+            
+            // Search Transactions
+            document.getElementById('searchTransactions').addEventListener('click', function() {
+                const year = document.getElementById('filterYear').value;
+                const month = document.getElementById('filterMonth').value;
+                const type = document.getElementById('filterType').value;
+                
+                let monthText = month === 'all' ? 'Semua Bulan' : 
+                    month === '01' ? 'Januari' :
+                    month === '02' ? 'Februari' :
+                    month === '10' ? 'Oktober' :
+                    month === '11' ? 'November' : 'Desember';
+                
+                let typeText = type === 'all' ? 'Semua Jenis' :
+                    type === 'income' ? 'Pemasukan' : 'Pengeluaran';
+                
+                alert(`Mencari transaksi:\nTahun: ${year}\nBulan: ${monthText}\nJenis: ${typeText}`);
+                
+                // Update table title
+                const tableTitle = document.querySelector('.table-title-pembina');
+                if (month !== 'all') {
+                    tableTitle.textContent = `Detail Transaksi ${monthText} ${year}`;
+                } else {
+                    tableTitle.textContent = `Detail Transaksi Tahun ${year}`;
+                }
+            });
+            
+            // View transaction details
+            document.querySelectorAll('.btn-view-detail').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const transactionId = this.getAttribute('data-id');
+                    const row = this.closest('tr');
+                    const date = row.cells[0].textContent;
+                    const description = row.cells[2].textContent;
+                    const type = row.cells[3].textContent;
+                    const amount = row.cells[4].textContent;
+                    const status = row.cells[5].querySelector('.status').textContent;
+                    
+                    // Create modal-like alert
+                    const detail = `
+Detail Transaksi:
+-------------------------
+ID Transaksi: ${transactionId}
+Tanggal: ${date}
+Keterangan: ${description}
+Jenis: ${type}
+Jumlah: ${amount}
+Status: ${status}
+-------------------------
+Lampiran: Bukti_transaksi_${transactionId}.pdf
+Kegiatan: ${description.includes('-') ? description.split('-')[1].trim() : 'General'}
+Diupload: ${date} oleh Bendahara UKM
+`;
+                    
+                    alert(detail);
+                });
+            });
+            
+            // Pagination buttons
+            document.querySelectorAll('.btn-action-pembina').forEach(btn => {
+                if (btn.innerHTML.includes('fa-chevron')) {
+                    btn.addEventListener('click', function() {
+                        if (this.innerHTML.includes('fa-chevron-left')) {
+                            alert('Navigasi ke halaman sebelumnya...');
+                        } else {
+                            alert('Navigasi ke halaman berikutnya...');
+                        }
+                    });
+                }
+            });
         });
     </script>
 </body>

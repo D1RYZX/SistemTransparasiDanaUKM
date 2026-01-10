@@ -599,6 +599,28 @@
             }
         `;
         document.head.appendChild(style);
+        // Fungsi logout sederhana
+function logoutUser() {
+    if (confirm('Apakah Anda yakin ingin logout?')) {
+        // Hapus data sesi
+        localStorage.removeItem('user');
+        localStorage.removeItem('loginTime');
+        
+        // Redirect ke halaman login
+        window.location.href = 'index.html';
+    }
+}
+
+// Atur event listener untuk tombol logout
+document.addEventListener('DOMContentLoaded', function() {
+    const logoutBtn = document.querySelector('.logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            logoutUser();
+        });
+    }
+});
     </script>
 </body>
 </html>

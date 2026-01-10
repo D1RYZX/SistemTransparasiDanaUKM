@@ -4,11 +4,497 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pengajuan Proposal - Sistem Transparansi Dana UKM</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Improved Proposal Styles */
+        /* BASE STYLES (dari dashboard-admin.html) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: #f5f7fa;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: white;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .current-date {
+            font-size: 12px;
+            opacity: 0.8;
+            color: rgba(255,255,255,0.7) !important;
+            margin-top: 10px;
+        }
+        
+        .sidebar-nav ul {
+            list-style: none;
+        }
+        
+        .sidebar-nav li {
+            margin-bottom: 2px;
+        }
+        
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .sidebar-nav a:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .sidebar-nav a.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border-left: 4px solid #4fc3f7;
+        }
+        
+        .sidebar-nav i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            padding: 20px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .logout-btn i {
+            margin-right: 8px;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 20px;
+            width: calc(100% - 260px);
+            min-height: 100vh;
+            background: #f5f7fa;
+        }
+        
+        .top-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .user-name {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .user-role {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .page-title h1 {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+        
+        .page-title p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            margin: 0 2px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .card-header h3 {
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+        
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .card .card-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-success .card-icon {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+        
+        .card-warning .card-icon {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+        
+        .card-danger .card-icon {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .card-info .card-icon {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+        
+        .card-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .card-desc {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        /* Table Container */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .table-container h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            width: 100%;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+        
+        thead {
+            background: #f8f9fa;
+        }
+        
+        th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            white-space: nowrap;
+        }
+        
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        /* Status Badges */
+        .status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-revised {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            .main-content {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                margin-bottom: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 15px;
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .user-info {
+                margin-bottom: 15px;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .page-title h1 {
+                font-size: 20px;
+            }
+            
+            .card {
+                padding: 16px;
+            }
+            
+            .card-value {
+                font-size: 24px;
+            }
+        }
+
+        /* PAGE SPECIFIC STYLES - Pengajuan Proposal */
+        .proposal-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .proposal-stat-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .proposal-stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a3a8f;
+            margin-bottom: 5px;
+        }
+        
+        .proposal-stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .filter-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .filter-select {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            min-width: 200px;
+        }
+        
+        /* Proposal Container */
         .proposal-container {
             background: white;
             border-radius: 12px;
@@ -89,26 +575,6 @@
             padding: 8px 16px;
             border-radius: 20px;
             font-weight: 500;
-        }
-        
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .status-approved {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .status-rejected {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .status-revised {
-            background: #d1ecf1;
-            color: #0c5460;
         }
         
         .proposal-content-grid {
@@ -260,6 +726,34 @@
             margin-bottom: 10px;
         }
         
+        .form-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            margin-bottom: 10px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
         @media (max-width: 768px) {
             .proposal-tabs {
                 flex-wrap: wrap;
@@ -267,28 +761,38 @@
             
             .proposal-tab {
                 flex: 1;
-                min-width: 120px;
+                min-width: 140px;
                 text-align: center;
-                padding: 15px 10px;
+                padding: 15px 20px;
             }
             
             .proposal-header {
                 flex-direction: column;
             }
             
-            .proposal-content-grid {
-                grid-template-columns: 1fr;
-            }
-            
             .action-buttons {
                 flex-direction: column;
             }
             
-            .action-buttons button {
+            .action-buttons .btn {
                 width: 100%;
+            }
+            
+            .form-group {
+                min-width: 100%;
+            }
+            
+            .proposal-content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .meta-item {
+                min-width: 120px;
             }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="dashboard-container">
@@ -338,12 +842,37 @@
                 </div>
             </div>
             
+            <!-- Proposal Stats -->
+            <div class="proposal-stats">
+                <div class="proposal-stat-item">
+                    <div class="proposal-stat-value">12</div>
+                    <div class="proposal-stat-label">Menunggu Review</div>
+                </div>
+                <div class="proposal-stat-item">
+                    <div class="proposal-stat-value">28</div>
+                    <div class="proposal-stat-label">Disetujui</div>
+                </div>
+                <div class="proposal-stat-item">
+                    <div class="proposal-stat-value">8</div>
+                    <div class="proposal-stat-label">Ditolak</div>
+                </div>
+                <div class="proposal-stat-item">
+                    <div class="proposal-stat-value">5</div>
+                    <div class="proposal-stat-label">Revisi</div>
+                </div>
+                <div class="proposal-stat-item">
+                    <div class="proposal-stat-value">Rp 89.5 Jt</div>
+                    <div class="proposal-stat-label">Total Diajukan</div>
+                </div>
+            </div>
+            
             <!-- Filter Section -->
-            <div class="filter-section" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 30px;">
-                <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center;">
-                    <div>
-                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Status:</label>
-                        <select class="filter-select" style="padding: 10px 15px; border: 2px solid #e0e0e0; border-radius: 8px; min-width: 200px;">
+            <div class="filter-section">
+                <h3 style="margin-bottom: 20px; color: #2c3e50;">Filter Proposal</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="statusFilter">Status:</label>
+                        <select id="statusFilter" class="filter-select">
                             <option value="all">Semua Status</option>
                             <option value="pending">Menunggu Review</option>
                             <option value="approved">Disetujui</option>
@@ -351,22 +880,26 @@
                             <option value="revised">Revisi</option>
                         </select>
                     </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">UKM:</label>
-                        <select class="filter-select" style="padding: 10px 15px; border: 2px solid #e0e0e0; border-radius: 8px; min-width: 200px;">
+                    <div class="form-group">
+                        <label for="ukmFilter">UKM:</label>
+                        <select id="ukmFilter" class="filter-select">
                             <option value="all">Semua UKM</option>
                             <option value="u2m">UKM U2M</option>
                             <option value="robotika">UKM Robotika</option>
                             <option value="multimedia">UKM Multimedia</option>
+                            <option value="teater">UKM Teater</option>
+                            <option value="fotografi">UKM Fotografi</option>
                         </select>
                     </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Periode:</label>
-                        <input type="month" class="filter-select" style="padding: 10px 15px; border: 2px solid #e0e0e0; border-radius: 8px;" value="2024-01">
+                    <div class="form-group">
+                        <label for="periodeFilter">Periode:</label>
+                        <input type="month" id="periodeFilter" class="filter-select" value="2024-01">
                     </div>
-                    <button class="btn btn-primary" style="align-self: flex-end;">
-                        <i class="fas fa-filter"></i> Filter
-                    </button>
+                    <div class="form-group" style="align-self: flex-end;">
+                        <button class="btn btn-primary" id="filterBtn">
+                            <i class="fas fa-filter"></i> Terapkan Filter
+                        </button>
+                    </div>
                 </div>
             </div>
             
@@ -419,6 +952,10 @@
                             <span class="meta-label">Pengaju</span>
                             <span class="meta-value">I Gede Adi Surya</span>
                         </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Pembina UKM</span>
+                            <span class="meta-value">Dr. Wayan Santika</span>
+                        </div>
                     </div>
                     
                     <!-- Proposal Content -->
@@ -428,6 +965,7 @@
                             <p>Workshop tentang digital marketing dan e-commerce untuk mahasiswa, bertujuan meningkatkan kemampuan wirausaha digital. Kegiatan ini akan diikuti oleh 50 peserta dari berbagai fakultas.</p>
                             <p><strong>Tujuan:</strong> Memberikan pemahaman tentang strategi pemasaran digital dan platform e-commerce kepada mahasiswa.</p>
                             <p><strong>Target Peserta:</strong> 50 mahasiswa aktif ITB STIKOM Bali</p>
+                            <p><strong>Lokasi:</strong> Gedung Serba Guna Kampus ITB STIKOM Bali</p>
                         </div>
                         
                         <div class="content-section">
@@ -483,7 +1021,7 @@
                                         <small>2.4 MB • Diupload: 25 Jan 2024</small>
                                     </div>
                                 </div>
-                                <button class="btn btn-sm btn-primary">
+                                <button class="btn btn-sm btn-primary" onclick="viewDocument('proposal.pdf')">
                                     <i class="fas fa-eye"></i> Lihat
                                 </button>
                             </div>
@@ -497,7 +1035,21 @@
                                         <small>1.2 MB • Diupload: 25 Jan 2024</small>
                                     </div>
                                 </div>
-                                <button class="btn btn-sm btn-primary">
+                                <button class="btn btn-sm btn-primary" onclick="viewDocument('rab.xlsx')">
+                                    <i class="fas fa-eye"></i> Lihat
+                                </button>
+                            </div>
+                            <div class="document-item">
+                                <div class="document-info">
+                                    <div class="document-icon">
+                                        <i class="fas fa-file-word"></i>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 500;">Jadwal Kegiatan.docx</div>
+                                        <small>850 KB • Diupload: 25 Jan 2024</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-primary" onclick="viewDocument('jadwal.docx')">
                                     <i class="fas fa-eye"></i> Lihat
                                 </button>
                             </div>
@@ -553,8 +1105,8 @@
                         </div>
                         
                         <div style="margin-top: 20px;">
-                            <textarea placeholder="Tambahkan komentar review..." style="width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; min-height: 100px; margin-bottom: 15px;"></textarea>
-                            <button class="btn btn-primary">
+                            <textarea id="commentInput" placeholder="Tambahkan komentar review..." style="width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; min-height: 100px; margin-bottom: 15px;"></textarea>
+                            <button class="btn btn-primary" onclick="submitComment()">
                                 <i class="fas fa-paper-plane"></i> Kirim Komentar
                             </button>
                         </div>
@@ -566,7 +1118,7 @@
             <div class="table-container">
                 <div class="section-header">
                     <h3>Daftar Proposal Lainnya</h3>
-                    <button class="btn btn-secondary" onclick="exportProposals()">
+                    <button class="btn btn-primary" onclick="exportProposals()">
                         <i class="fas fa-download"></i> Export Data
                     </button>
                 </div>
@@ -581,6 +1133,7 @@
                                 <th>Jumlah</th>
                                 <th>Tanggal</th>
                                 <th>Status</th>
+                                <th>Reviewer</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -592,6 +1145,7 @@
                                 <td>Rp 3.000.000</td>
                                 <td>28 Jan 2024</td>
                                 <td><span class="status status-approved">Disetujui</span></td>
+                                <td>Admin Keuangan</td>
                                 <td>
                                     <button class="btn btn-sm btn-info" onclick="viewProposal('PROP-2024-0015')">
                                         <i class="fas fa-eye"></i>
@@ -605,6 +1159,7 @@
                                 <td>Rp 1.800.000</td>
                                 <td>29 Jan 2024</td>
                                 <td><span class="status status-pending">Menunggu</span></td>
+                                <td>-</td>
                                 <td>
                                     <button class="btn btn-sm btn-info" onclick="viewProposal('PROP-2024-0018')">
                                         <i class="fas fa-eye"></i>
@@ -618,8 +1173,37 @@
                                 <td>Rp 4.500.000</td>
                                 <td>30 Jan 2024</td>
                                 <td><span class="status status-rejected">Ditolak</span></td>
+                                <td>Admin Keuangan</td>
                                 <td>
                                     <button class="btn btn-sm btn-info" onclick="viewProposal('PROP-2024-0020')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PROP-2024-0021</td>
+                                <td>UKM Fotografi</td>
+                                <td>Workshop Fotografi Dasar</td>
+                                <td>Rp 1.200.000</td>
+                                <td>31 Jan 2024</td>
+                                <td><span class="status status-revised">Revisi</span></td>
+                                <td>Pembina UKM</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" onclick="viewProposal('PROP-2024-0021')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PROP-2024-0019</td>
+                                <td>UKM U2M</td>
+                                <td>Bazar Produk UKM</td>
+                                <td>Rp 2.800.000</td>
+                                <td>27 Jan 2024</td>
+                                <td><span class="status status-approved">Disetujui</span></td>
+                                <td>Admin Keuangan</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" onclick="viewProposal('PROP-2024-0019')">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </td>
@@ -627,11 +1211,72 @@
                         </tbody>
                     </table>
                 </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                    <div style="font-size: 14px; color: #666;">
+                        Menampilkan 1-5 dari 53 proposal
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <button class="btn btn-secondary btn-sm" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span style="margin: 0 10px;">Halaman 1 dari 11</span>
+                        <button class="btn btn-secondary btn-sm">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Approval Statistics -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Rata-rata Waktu Review</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">2.5 Hari</div>
+                    <p class="card-desc">Waktu rata-rata peninjauan</p>
+                </div>
+                
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3>Tingkat Persetujuan</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">76%</div>
+                    <p class="card-desc">Proposal yang disetujui</p>
+                </div>
+                
+                <div class="card card-danger">
+                    <div class="card-header">
+                        <h3>Proposal Tertolak</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">15%</div>
+                    <p class="card-desc">Dari total pengajuan</p>
+                </div>
+                
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3>Nilai Rata-rata</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">8.2/10</div>
+                    <p class="card-desc">Kualitas proposal</p>
+                </div>
             </div>
         </main>
     </div>
     
-    <script src="script.js"></script>
     <script>
         // Set current date
         document.querySelector('.current-date').textContent = new Date().toLocaleDateString('id-ID', {
@@ -641,40 +1286,136 @@
             day: 'numeric'
         });
         
+        // Initialize current month in filter
+        const currentDate = new Date();
+        const currentMonth = currentDate.getFullYear() + '-' + String(currentDate.getMonth() + 1).padStart(2, '0');
+        document.getElementById('periodeFilter').value = currentMonth;
+        
+        // Filter button event
+        document.getElementById('filterBtn').addEventListener('click', function() {
+            const status = document.getElementById('statusFilter').value;
+            const ukm = document.getElementById('ukmFilter').value;
+            const periode = document.getElementById('periodeFilter').value;
+            
+            // Show loading indicator
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+            this.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                alert(`Filter diterapkan:\nStatus: ${status}\nUKM: ${ukm}\nPeriode: ${periode}`);
+                
+                // Reset button
+                this.innerHTML = '<i class="fas fa-filter"></i> Terapkan Filter';
+                this.disabled = false;
+            }, 500);
+        });
+        
         // Tab functionality
         function showProposalTab(tabName) {
-            // Update active tab
-            document.querySelectorAll('.proposal-tab').forEach(tab => {
-                tab.classList.remove('active');
+            // Hide all tabs
+            document.querySelectorAll('.proposal-content').forEach(tab => {
+                tab.style.display = 'none';
             });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.proposal-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(`${tabName}-proposals`).style.display = 'block';
+            
+            // Add active class to clicked button
             event.target.classList.add('active');
             
-            // Show corresponding content
-            alert(`Menampilkan tab: ${tabName}`);
-            // Implement tab switching logic
+            // Show message for other tabs
+            if (tabName !== 'pending') {
+                document.getElementById(`${tabName}-proposals`).innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px;">
+                        <i class="fas fa-clipboard-list" style="font-size: 48px; color: #ddd; margin-bottom: 20px;"></i>
+                        <h3 style="color: #666; margin-bottom: 10px;">Proposal ${tabName === 'approved' ? 'Disetujui' : tabName === 'rejected' ? 'Ditolak' : 'Revisi'}</h3>
+                        <p style="color: #999;">Daftar proposal ${tabName === 'approved' ? 'yang telah disetujui' : tabName === 'rejected' ? 'yang ditolak' : 'yang membutuhkan revisi'}</p>
+                        <p style="color: #999; font-size: 14px; margin-top: 20px;">Gunakan tabel di bawah untuk melihat detail proposal</p>
+                    </div>
+                `;
+            }
         }
         
         // Proposal actions
         function approveProposal(proposalId) {
             if (confirm(`Setujui proposal ${proposalId}? Dana akan dialokasikan.`)) {
-                alert(`Proposal ${proposalId} berhasil disetujui`);
-                // Implement approval logic
+                // Show loading
+                const approveBtn = event.target;
+                const originalText = approveBtn.innerHTML;
+                approveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+                approveBtn.disabled = true;
+                
+                // Simulate API call
+                setTimeout(() => {
+                    alert(`Proposal ${proposalId} berhasil disetujui`);
+                    approveBtn.innerHTML = originalText;
+                    approveBtn.disabled = false;
+                    
+                    // Update UI
+                    document.querySelector('.proposal-status').innerHTML = '<i class="fas fa-check-circle"></i> Disetujui';
+                    document.querySelector('.proposal-status').className = 'proposal-status status-approved';
+                    
+                    // Disable action buttons
+                    document.querySelectorAll('.action-buttons .btn').forEach(btn => {
+                        btn.disabled = true;
+                    });
+                }, 1000);
             }
         }
         
         function rejectProposal(proposalId) {
             const reason = prompt('Masukkan alasan penolakan:');
             if (reason) {
-                alert(`Proposal ${proposalId} ditolak: ${reason}`);
-                // Implement rejection logic
+                // Show loading
+                const rejectBtn = event.target;
+                const originalText = rejectBtn.innerHTML;
+                rejectBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+                rejectBtn.disabled = true;
+                
+                // Simulate API call
+                setTimeout(() => {
+                    alert(`Proposal ${proposalId} ditolak: ${reason}`);
+                    rejectBtn.innerHTML = originalText;
+                    rejectBtn.disabled = false;
+                    
+                    // Update UI
+                    document.querySelector('.proposal-status').innerHTML = '<i class="fas fa-times-circle"></i> Ditolak';
+                    document.querySelector('.proposal-status').className = 'proposal-status status-rejected';
+                    
+                    // Disable action buttons
+                    document.querySelectorAll('.action-buttons .btn').forEach(btn => {
+                        btn.disabled = true;
+                    });
+                }, 1000);
             }
         }
         
         function requestRevision(proposalId) {
             const note = prompt('Masukkan catatan revisi:');
             if (note) {
-                alert(`Revisi diminta untuk proposal ${proposalId}: ${note}`);
-                // Implement revision request logic
+                // Show loading
+                const revisionBtn = event.target;
+                const originalText = revisionBtn.innerHTML;
+                revisionBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+                revisionBtn.disabled = true;
+                
+                // Simulate API call
+                setTimeout(() => {
+                    alert(`Revisi diminta untuk proposal ${proposalId}: ${note}`);
+                    revisionBtn.innerHTML = originalText;
+                    revisionBtn.disabled = false;
+                    
+                    // Update UI
+                    document.querySelector('.proposal-status').innerHTML = '<i class="fas fa-edit"></i> Perlu Revisi';
+                    document.querySelector('.proposal-status').className = 'proposal-status status-revised';
+                }, 1000);
             }
         }
         
@@ -682,19 +1423,104 @@
             const date = prompt('Tunda hingga tanggal (DD/MM/YYYY):');
             if (date) {
                 alert(`Review proposal ${proposalId} ditunda hingga: ${date}`);
-                // Implement defer logic
+                // In real app, you would make an API call here
             }
         }
         
         function viewProposal(proposalId) {
             alert(`Melihat detail proposal: ${proposalId}`);
-            // Implement view logic
+            // In real app, you would load the proposal details
+        }
+        
+        function viewDocument(docName) {
+            alert(`Membuka dokumen: ${docName}`);
+            // In real app, you would open the document in a modal or new tab
+        }
+        
+        function submitComment() {
+            const commentInput = document.getElementById('commentInput');
+            const comment = commentInput.value.trim();
+            
+            if (!comment) {
+                alert('Silakan masukkan komentar terlebih dahulu');
+                return;
+            }
+            
+            // Show loading
+            const submitBtn = event.target;
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+            submitBtn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Add new comment to the list
+                const commentsContainer = document.querySelector('.review-comments');
+                const newComment = document.createElement('div');
+                newComment.className = 'comment-item';
+                newComment.innerHTML = `
+                    <div class="comment-header">
+                        <strong>Admin Keuangan</strong>
+                        <small>${new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })} ${new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</small>
+                    </div>
+                    <p>${comment}</p>
+                `;
+                
+                // Insert before the comment input section
+                commentsContainer.insertBefore(newComment, commentsContainer.children[commentsContainer.children.length - 1]);
+                
+                // Clear input
+                commentInput.value = '';
+                
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                
+                alert('Komentar berhasil dikirim');
+            }, 500);
         }
         
         function exportProposals() {
-            alert('Mengekspor data proposal...');
-            // Implement export logic
+            alert('Data proposal akan diexport ke Excel');
+            // In real app, you would trigger file download
         }
+        
+        // Initialize tab visibility
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show pending tab by default, hide others
+            document.getElementById('pending-proposals').style.display = 'block';
+            
+            // Hide other tabs initially
+            const tabs = ['approved', 'rejected', 'revised'];
+            tabs.forEach(tab => {
+                const tabElement = document.getElementById(`${tab}-proposals`);
+                if (tabElement) {
+                    tabElement.style.display = 'none';
+                }
+            });
+        });
+        // Fungsi logout sederhana
+function logoutUser() {
+    if (confirm('Apakah Anda yakin ingin logout?')) {
+        // Hapus data sesi
+        localStorage.removeItem('user');
+        localStorage.removeItem('loginTime');
+        
+        // Redirect ke halaman login
+        window.location.href = 'index.html';
+    }
+}
+
+// Atur event listener untuk tombol logout
+document.addEventListener('DOMContentLoaded', function() {
+    const logoutBtn = document.querySelector('.logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            logoutUser();
+        });
+    }
+});
     </script>
 </body>
 </html>

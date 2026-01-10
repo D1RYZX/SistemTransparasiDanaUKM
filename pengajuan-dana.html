@@ -4,18 +4,371 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pengajuan Dana - Sistem Transparansi Dana UKM</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        .pengajuan-container {
-            background-color: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
         
+        body {
+            background: #f5f7fa;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: white;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .current-date {
+            font-size: 12px;
+            opacity: 0.8;
+            color: rgba(255,255,255,0.7) !important;
+            margin-top: 10px;
+        }
+        
+        .sidebar-nav ul {
+            list-style: none;
+        }
+        
+        .sidebar-nav li {
+            margin-bottom: 2px;
+        }
+        
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .sidebar-nav a:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .sidebar-nav a.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border-left: 4px solid #4fc3f7;
+        }
+        
+        .sidebar-nav i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            padding: 20px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .logout-btn i {
+            margin-right: 8px;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 20px;
+            width: calc(100% - 260px);
+            min-height: 100vh;
+            background: #f5f7fa;
+        }
+        
+        .top-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .user-name {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .user-role {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .page-title h1 {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+        
+        .page-title p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            margin: 0 2px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        /* Table Container */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .table-container h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            width: 100%;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+        
+        thead {
+            background: #f8f9fa;
+        }
+        
+        th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            white-space: nowrap;
+        }
+        
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        /* Pengajuan Container Styles */
+        .pengajuan-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+        
+        /* Proposal Info */
+        .proposal-info {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+            border-left: 4px solid #ffb300;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .proposal-info i {
+            color: #ff8f00;
+            margin-right: 12px;
+            font-size: 18px;
+            margin-top: 2px;
+        }
+        
+        .proposal-info strong {
+            color: #5d4037;
+        }
+        
+        /* Kegiatan Options */
         .kegiatan-options {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -24,115 +377,271 @@
         }
         
         .kegiatan-option {
-            border: 2px solid #dee2e6;
+            border: 2px solid #e0e0e0;
             border-radius: 10px;
-            padding: 15px;
+            padding: 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
+            background: white;
         }
         
         .kegiatan-option:hover {
-            border-color: #2a5bd7;
-            background-color: #f0f5ff;
+            border-color: #667eea;
+            background: #f0f5ff;
+            transform: translateY(-2px);
         }
         
         .kegiatan-option.selected {
-            border-color: #2a5bd7;
-            background-color: #e8f4ff;
+            border-color: #667eea;
+            background: #e8f4ff;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
         }
         
         .kegiatan-icon {
-            font-size: 24px;
-            color: #2a5bd7;
-            margin-bottom: 10px;
+            font-size: 28px;
+            color: #667eea;
+            margin-bottom: 12px;
         }
         
+        /* Logo khusus untuk MUSANG (Musyawarah Anggota) */
+        .musang-icon {
+            font-size: 28px;
+            color: #667eea;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        
+        .musang-icon::before {
+            content: "👥";
+            font-size: 24px;
+        }
+        
+        /* Anggaran Table */
         .anggaran-table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
         }
         
         .anggaran-table th,
         .anggaran-table td {
-            border: 1px solid #dee2e6;
+            border: 1px solid #e0e0e0;
             padding: 12px;
             text-align: left;
         }
         
         .anggaran-table th {
-            background-color: #f8f9fa;
+            background: #f8f9fa;
             font-weight: 600;
+            color: #2c3e50;
         }
         
         .total-anggaran {
-            background-color: #e7f7fa;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
             font-weight: bold;
+            color: #1565c0;
         }
         
+        .item-input,
+        .keterangan-input,
+        .jumlah-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        /* File Upload */
         .file-upload-section {
-            border: 2px dashed #dee2e6;
+            border: 2px dashed #bdbdbd;
             border-radius: 10px;
             padding: 30px;
             text-align: center;
             margin: 20px 0;
-            background-color: #f8f9fa;
+            background: #fafafa;
             transition: all 0.3s;
         }
         
         .file-upload-section:hover {
-            border-color: #2a5bd7;
-            background-color: #f0f5ff;
+            border-color: #667eea;
+            background: #f0f5ff;
         }
         
         .upload-icon {
             font-size: 48px;
-            color: #2a5bd7;
+            color: #667eea;
             margin-bottom: 15px;
         }
         
-        .proposal-info {
-            background-color: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        .upload-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            transition: background 0.3s;
         }
         
-        .proposal-info i {
-            color: #856404;
-            margin-right: 10px;
+        .upload-btn:hover {
+            background: #5a6fd8;
         }
         
+        /* Status Badges */
         .status-badge {
-            display: inline-block;
-            padding: 5px 15px;
+            padding: 6px 12px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
+            display: inline-block;
         }
         
-        .status-pending {
-            background-color: #fff3cd;
+        .status-diajukan {
+            background: #fff3cd;
             color: #856404;
         }
         
-        .status-review {
-            background-color: #cce5ff;
+        .status-proses {
+            background: #cce5ff;
             color: #004085;
         }
         
-        .status-approved {
-            background-color: #d4edda;
+        .status-direview {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .status-disetujui {
+            background: #d4edda;
             color: #155724;
         }
         
-        .status-rejected {
-            background-color: #f8d7da;
+        .status-ditolak {
+            background: #f8d7da;
             color: #721c24;
         }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        
+        .pagination-info {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        /* Tooltip untuk penjelasan singkat */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            .main-content {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+            }
+            
+            .kegiatan-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                margin-bottom: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 15px;
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .user-info {
+                margin-bottom: 15px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .form-actions .btn {
+                width: 100%;
+            }
+            
+            .kegiatan-options {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .page-title h1 {
+                font-size: 20px;
+            }
+            
+            .pengajuan-container {
+                padding: 16px;
+            }
+            
+            .file-upload-section {
+                padding: 20px;
+            }
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="dashboard-container">
@@ -141,7 +650,7 @@
             <div class="sidebar-header">
                 <h2>Sistem Transparansi Dana</h2>
                 <div class="role-badge">UKM - <span class="ukm-name">U2M</span></div>
-                <p class="current-date" style="color: rgba(255,255,255,0.7); margin-top: 10px; font-size: 14px;"></p>
+                <p class="current-date"></p>
             </div>
             
             <nav class="sidebar-nav">
@@ -154,9 +663,11 @@
                 </ul>
             </nav>
             
-            <button class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i> Keluar
-            </button>
+            <div class="sidebar-footer">
+                <button class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </button>
+            </div>
         </aside>
         
         <!-- Main Content -->
@@ -166,8 +677,8 @@
                 <div class="user-info">
                     <div class="user-avatar">KU</div>
                     <div class="user-details">
-                        <h3 class="user-name">Ketua UKM <span class="ukm-name">U2M</span></h3>
-                        <p class="user-role">UKM - <span class="ukm-info">Unit Usaha Mahasiswa</span></p>
+                        <h3 class="user-name">Ketua UKM U2M</h3>
+                        <p class="user-role">UKM - Unit Usaha Mahasiswa</p>
                     </div>
                 </div>
                 
@@ -181,7 +692,9 @@
             <div class="pengajuan-container">
                 <div class="proposal-info">
                     <i class="fas fa-exclamation-circle"></i>
-                    <strong>Informasi Penting:</strong> Pengajuan dana harus diajukan minimal 30 hari sebelum pelaksanaan kegiatan. Proposal harus mencakup rincian anggaran, timeline, dan tujuan kegiatan.
+                    <div>
+                        <strong>Informasi Penting:</strong> Pengajuan dana harus diajukan minimal 30 hari sebelum pelaksanaan kegiatan. Proposal harus mencakup rincian anggaran, timeline, dan tujuan kegiatan.
+                    </div>
                 </div>
                 
                 <form id="pengajuanForm">
@@ -190,43 +703,56 @@
                         <input type="text" id="judulProposal" name="judulProposal" placeholder="Contoh: Seminar Kewirausahaan Digital 2024" required>
                     </div>
                     
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="jenisKegiatan">Jenis Kegiatan U2M</label>
-                            <div class="kegiatan-options">
-                                <div class="kegiatan-option" data-value="seminar">
-                                    <div class="kegiatan-icon">
-                                        <i class="fas fa-chalkboard-teacher"></i>
-                                    </div>
-                                    <div>SEMINAR & WORKSHOP</div>
+                    <div class="form-group">
+                        <label for="jenisKegiatan">Jenis Kegiatan U2M</label>
+                        <div class="kegiatan-options">
+                            <div class="kegiatan-option" data-value="seminar">
+                                <div class="kegiatan-icon">
+                                    <i class="fas fa-chalkboard-teacher"></i>
                                 </div>
-                                <div class="kegiatan-option" data-value="business">
-                                    <div class="kegiatan-icon">
-                                        <i class="fas fa-handshake"></i>
-                                    </div>
-                                    <div>BUSINESS SHARING</div>
-                                </div>
-                                <div class="kegiatan-option" data-value="expo">
-                                    <div class="kegiatan-icon">
-                                        <i class="fas fa-store"></i>
-                                    </div>
-                                    <div>U2M EXPO</div>
-                                </div>
-                                <div class="kegiatan-option" data-value="kopi">
-                                    <div class="kegiatan-icon">
-                                        <i class="fas fa-coffee"></i>
-                                    </div>
-                                    <div>KOPI SORE</div>
-                                </div>
-                                <div class="kegiatan-option" data-value="musang">
-                                    <div class="kegiatan-icon">
-                                        <i class="fas fa-paw"></i>
-                                    </div>
-                                    <div>MUSANG</div>
+                                <div>SEMINAR & WORKSHOP</div>
+                                <div class="tooltip">
+                                    <span class="tooltiptext">Kegiatan pembelajaran dan pelatihan untuk meningkatkan keterampilan</span>
                                 </div>
                             </div>
-                            <input type="hidden" id="jenisKegiatan" name="jenisKegiatan" required>
+                            <div class="kegiatan-option" data-value="business">
+                                <div class="kegiatan-icon">
+                                    <i class="fas fa-handshake"></i>
+                                </div>
+                                <div>BUSINESS SHARING</div>
+                                <div class="tooltip">
+                                    <span class="tooltiptext">Berbagi pengalaman bisnis dengan pengusaha dan praktisi</span>
+                                </div>
+                            </div>
+                            <div class="kegiatan-option" data-value="expo">
+                                <div class="kegiatan-icon">
+                                    <i class="fas fa-store"></i>
+                                </div>
+                                <div>U2M EXPO</div>
+                                <div class="tooltip">
+                                    <span class="tooltiptext">Pameran produk dan jasa hasil karya anggota UKM</span>
+                                </div>
+                            </div>
+                            <div class="kegiatan-option" data-value="kopi">
+                                <div class="kegiatan-icon">
+                                    <i class="fas fa-coffee"></i>
+                                </div>
+                                <div>KOPI SORE</div>
+                                <div class="tooltip">
+                                    <span class="tooltiptext">Diskusi informal tentang kewirausahaan sambil menikmati kopi</span>
+                                </div>
+                            </div>
+                            <div class="kegiatan-option" data-value="musang">
+                                <div class="kegiatan-icon musang-icon">
+                                    <!-- Icon khusus untuk MUSANG -->
+                                </div>
+                                <div>MUSANG<br><small>(Musyawarah Anggota)</small></div>
+                                <div class="tooltip">
+                                    <span class="tooltiptext">Musyawarah anggota untuk evaluasi dan perencanaan kegiatan UKM</span>
+                                </div>
+                            </div>
                         </div>
+                        <input type="hidden" id="jenisKegiatan" name="jenisKegiatan" required>
                     </div>
                     
                     <div class="form-row">
@@ -264,9 +790,7 @@
                     <!-- Rincian Anggaran -->
                     <div class="form-group">
                         <label>Rincian Anggaran Biaya</label>
-                        <div class="anggaran-info" style="color: #666; margin-bottom: 10px;">
-                            Tambahkan item anggaran untuk kegiatan ini:
-                        </div>
+                        <p style="color: #666; margin-bottom: 10px;">Tambahkan item anggaran untuk kegiatan ini:</p>
                         
                         <table class="anggaran-table">
                             <thead>
@@ -332,16 +856,6 @@
                         </div>
                     </div>
                     
-                    <!-- Informasi Proses -->
-                    <div class="form-group">
-                        <div class="notification" style="background-color: #e7f7fa; padding: 15px; border-radius: 8px; border-left: 4px solid #17a2b8;">
-                            <i class="fas fa-clock" style="color: #17a2b8; margin-right: 10px;"></i>
-                            <div>
-                                <strong>Proses Pengajuan:</strong> Pengajuan dana akan direview oleh Pembina UKM terlebih dahulu, kemudian diteruskan ke Admin Keuangan. Proses review membutuhkan waktu 7-14 hari kerja. Anda akan mendapatkan notifikasi via email saat status berubah.
-                            </div>
-                        </div>
-                    </div>
-                    
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-paper-plane"></i> Ajukan Proposal
@@ -367,20 +881,18 @@
                                 <th>Kegiatan</th>
                                 <th>Tanggal Ajuan</th>
                                 <th>Jumlah Diajukan</th>
-                                <th>Status Pembina</th>
-                                <th>Status Admin</th>
+                                <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="riwayatPengajuanBody">
                             <tr>
-                                <td>PROP-2024-001</td>
+                                <td>PROP-U2M-001</td>
                                 <td>Workshop Digital Marketing 2024</td>
                                 <td>SEMINAR & WORKSHOP</td>
                                 <td>15 Jan 2024</td>
                                 <td>Rp 5.000.000</td>
-                                <td><span class="status-badge status-approved">Disetujui</span></td>
-                                <td><span class="status-badge status-review">Dalam Review</span></td>
+                                <td><span class="status-badge status-diajukan">Diajukan</span></td>
                                 <td>
                                     <button class="btn btn-secondary btn-sm">
                                         <i class="fas fa-eye"></i> Detail
@@ -388,41 +900,12 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>PROP-2023-012</td>
+                                <td>PROP-U2M-002</td>
                                 <td>Business Sharing dengan Entrepreneur Muda</td>
                                 <td>BUSINESS SHARING</td>
-                                <td>5 Des 2023</td>
+                                <td>5 Feb 2024</td>
                                 <td>Rp 3.500.000</td>
-                                <td><span class="status-badge status-approved">Disetujui</span></td>
-                                <td><span class="status-badge status-approved">Disetujui</span></td>
-                                <td>
-                                    <button class="btn btn-secondary btn-sm">
-                                        <i class="fas fa-download"></i> Unduh
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>PROP-2023-011</td>
-                                <td>U2M Expo Tahun 2023</td>
-                                <td>U2M EXPO</td>
-                                <td>20 Nov 2023</td>
-                                <td>Rp 8.000.000</td>
-                                <td><span class="status-badge status-approved">Disetujui</span></td>
-                                <td><span class="status-badge status-approved">Disetujui</span></td>
-                                <td>
-                                    <button class="btn btn-secondary btn-sm">
-                                        <i class="fas fa-download"></i> Unduh
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>PROP-2023-010</td>
-                                <td>Kopi Sore dengan Alumni Sukses</td>
-                                <td>KOPI SORE</td>
-                                <td>10 Nov 2023</td>
-                                <td>Rp 1.200.000</td>
-                                <td><span class="status-badge status-rejected">Ditolak</span></td>
-                                <td><span class="status-badge status-rejected">Ditolak</span></td>
+                                <td><span class="status-badge status-proses">Proses Review</span></td>
                                 <td>
                                     <button class="btn btn-secondary btn-sm">
                                         <i class="fas fa-eye"></i> Detail
@@ -430,13 +913,38 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>PROP-2023-009</td>
-                                <td>Perawatan dan Pengembangan Musang</td>
-                                <td>MUSANG</td>
-                                <td>1 Nov 2023</td>
-                                <td>Rp 2.000.000</td>
-                                <td><span class="status-badge status-approved">Disetujui</span></td>
-                                <td><span class="status-badge status-approved">Disetujui</span></td>
+                                <td>PROP-U2M-003</td>
+                                <td>Persiapan U2M Expo 2024</td>
+                                <td>U2M EXPO</td>
+                                <td>20 Feb 2024</td>
+                                <td>Rp 8.000.000</td>
+                                <td><span class="status-badge status-direview">Direview Pembina</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-eye"></i> Detail
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PROP-U2M-004</td>
+                                <td>Kopi Sore dengan Investor Startup</td>
+                                <td>KOPI SORE</td>
+                                <td>28 Feb 2024</td>
+                                <td>Rp 2.500.000</td>
+                                <td><span class="status-badge status-ditolak">Ditolak</span></td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-eye"></i> Detail
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PROP-U2M-005</td>
+                                <td>Musyawarah Anggota Tahunan 2024</td>
+                                <td>MUSANG (Musyawarah Anggota)</td>
+                                <td>10 Mar 2024</td>
+                                <td>Rp 1.800.000</td>
+                                <td><span class="status-badge status-disetujui">Disetujui</span></td>
                                 <td>
                                     <button class="btn btn-secondary btn-sm">
                                         <i class="fas fa-download"></i> Unduh
@@ -447,11 +955,11 @@
                     </table>
                 </div>
                 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                <div class="pagination">
                     <div class="pagination-info">
-                        Menampilkan 1-5 dari 12 pengajuan
+                        Menampilkan 1-5 dari 8 pengajuan
                     </div>
-                    <div class="pagination">
+                    <div style="display: flex; align-items: center; gap: 10px;">
                         <button class="btn btn-secondary btn-sm" disabled><i class="fas fa-chevron-left"></i></button>
                         <span style="margin: 0 10px;">Halaman 1</span>
                         <button class="btn btn-secondary btn-sm"><i class="fas fa-chevron-right"></i></button>
@@ -461,10 +969,38 @@
         </main>
     </div>
     
-    <script src="script.js"></script>
     <script>
-        // Set tanggal default
-        window.onload = function() {
+        // Set current date
+        document.querySelector('.current-date').textContent = new Date().toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        // Fungsi logout sederhana
+        function logoutUser() {
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                // Hapus data sesi
+                localStorage.removeItem('user');
+                localStorage.removeItem('loginTime');
+                
+                // Redirect ke halaman login
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // Atur event listener untuk tombol logout
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutBtn = document.querySelector('.logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logoutUser();
+                });
+            }
+            
+            // Set tanggal default
             const today = new Date();
             const tomorrow = new Date(today);
             tomorrow.setDate(tomorrow.getDate() + 1);
@@ -478,47 +1014,140 @@
             document.getElementById('tanggalSelesai').min = minDate;
             
             updateTotalAnggaran();
-        };
-        
-        // Pilihan kegiatan
-        document.querySelectorAll('.kegiatan-option').forEach(option => {
-            option.addEventListener('click', function() {
-                document.querySelectorAll('.kegiatan-option').forEach(opt => {
-                    opt.classList.remove('selected');
+            
+            // Pilihan kegiatan
+            document.querySelectorAll('.kegiatan-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.kegiatan-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    document.getElementById('jenisKegiatan').value = this.getAttribute('data-value');
                 });
-                this.classList.add('selected');
-                document.getElementById('jenisKegiatan').value = this.getAttribute('data-value');
             });
-        });
-        
-        // File upload functionality
-        const proposalFile = document.getElementById('proposalFile');
-        const rabFile = document.getElementById('rabFile');
-        const browseProposalBtn = document.getElementById('browseProposalBtn');
-        const browseRabBtn = document.getElementById('browseRabBtn');
-        const proposalFileName = document.getElementById('proposalFileName');
-        const rabFileName = document.getElementById('rabFileName');
-        
-        browseProposalBtn.addEventListener('click', function() {
-            proposalFile.click();
-        });
-        
-        browseRabBtn.addEventListener('click', function() {
-            rabFile.click();
-        });
-        
-        proposalFile.addEventListener('change', function() {
-            if (this.files.length > 0) {
-                proposalFileName.textContent = `File: ${this.files[0].name}`;
-                proposalFileName.style.color = '#28a745';
-            }
-        });
-        
-        rabFile.addEventListener('change', function() {
-            if (this.files.length > 0) {
-                rabFileName.textContent = `File: ${this.files[0].name}`;
-                rabFileName.style.color = '#28a745';
-            }
+            
+            // File upload functionality
+            const proposalFile = document.getElementById('proposalFile');
+            const rabFile = document.getElementById('rabFile');
+            const browseProposalBtn = document.getElementById('browseProposalBtn');
+            const browseRabBtn = document.getElementById('browseRabBtn');
+            const proposalFileName = document.getElementById('proposalFileName');
+            const rabFileName = document.getElementById('rabFileName');
+            
+            browseProposalBtn.addEventListener('click', function() {
+                proposalFile.click();
+            });
+            
+            browseRabBtn.addEventListener('click', function() {
+                rabFile.click();
+            });
+            
+            proposalFile.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    proposalFileName.textContent = `File: ${this.files[0].name}`;
+                    proposalFileName.style.color = '#28a745';
+                }
+            });
+            
+            rabFile.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    rabFileName.textContent = `File: ${this.files[0].name}`;
+                    rabFileName.style.color = '#28a745';
+                }
+            });
+            
+            // Validasi tanggal selesai harus >= tanggal mulai
+            document.getElementById('tanggalMulai').addEventListener('change', function() {
+                const tanggalMulai = this.value;
+                document.getElementById('tanggalSelesai').min = tanggalMulai;
+                
+                if (document.getElementById('tanggalSelesai').value < tanggalMulai) {
+                    document.getElementById('tanggalSelesai').value = tanggalMulai;
+                }
+            });
+            
+            // Form submission
+            document.getElementById('pengajuanForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const jenisKegiatan = document.getElementById('jenisKegiatan').value;
+                const judulProposal = document.getElementById('judulProposal').value;
+                const totalAnggaran = document.getElementById('totalAnggaran').textContent;
+                
+                if (!jenisKegiatan) {
+                    alert('Harap pilih jenis kegiatan!');
+                    return;
+                }
+                
+                if (!proposalFile.files.length) {
+                    alert('Harap upload file proposal!');
+                    return;
+                }
+                
+                // Validasi tanggal
+                const tanggalMulai = new Date(document.getElementById('tanggalMulai').value);
+                const tanggalSelesai = new Date(document.getElementById('tanggalSelesai').value);
+                const today = new Date();
+                
+                if (tanggalMulai < today) {
+                    alert('Tanggal mulai tidak boleh kurang dari hari ini!');
+                    return;
+                }
+                
+                if (tanggalSelesai < tanggalMulai) {
+                    alert('Tanggal selesai tidak boleh kurang dari tanggal mulai!');
+                    return;
+                }
+                
+                // Validasi anggaran
+                const jumlahInputs = document.querySelectorAll('.jumlah-input');
+                let valid = true;
+                jumlahInputs.forEach(input => {
+                    if (!input.value || parseFloat(input.value) <= 0) {
+                        valid = false;
+                    }
+                });
+                
+                if (!valid) {
+                    alert('Harap isi semua item anggaran dengan jumlah yang valid!');
+                    return;
+                }
+                
+                if (confirm(`Apakah Anda yakin mengajukan proposal ini?\n\nJudul: ${judulProposal}\nTotal Anggaran: ${totalAnggaran}`)) {
+                    alert('Proposal berhasil diajukan! Menunggu review dari Pembina UKM.');
+                    
+                    // Reset form
+                    this.reset();
+                    proposalFileName.textContent = '';
+                    rabFileName.textContent = '';
+                    document.querySelectorAll('.kegiatan-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Reset tabel anggaran
+                    document.getElementById('anggaranBody').innerHTML = `
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="item-input" placeholder="Contoh: Honor Pembicara" required></td>
+                            <td><input type="text" class="keterangan-input" placeholder="Keterangan item" required></td>
+                            <td><input type="number" class="jumlah-input" placeholder="0" min="0" required></td>
+                            <td><button type="button" class="btn btn-danger btn-sm" onclick="hapusBaris(this)"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                    `;
+                    barisAnggaran = 1;
+                    updateTotalAnggaran();
+                    
+                    // Set tanggal default
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    document.getElementById('tanggalMulai').valueAsDate = tomorrow;
+                    document.getElementById('tanggalSelesai').valueAsDate = tomorrow;
+                    
+                    setTimeout(() => {
+                        alert('Proposal telah ditambahkan ke riwayat pengajuan. Anda akan mendapatkan notifikasi via email saat status berubah.');
+                    }, 500);
+                }
+            });
         });
         
         // Fungsi untuk tabel anggaran
@@ -565,106 +1194,6 @@
             
             document.getElementById('totalAnggaran').textContent = `Rp ${total.toLocaleString('id-ID')}`;
         }
-        
-        // Event listener untuk update total ketika input berubah
-        document.addEventListener('input', function(e) {
-            if (e.target.classList.contains('jumlah-input')) {
-                updateTotalAnggaran();
-            }
-        });
-        
-        // Form submission
-        document.getElementById('pengajuanForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const jenisKegiatan = document.getElementById('jenisKegiatan').value;
-            const judulProposal = document.getElementById('judulProposal').value;
-            const totalAnggaran = document.getElementById('totalAnggaran').textContent;
-            
-            if (!jenisKegiatan) {
-                alert('Harap pilih jenis kegiatan!');
-                return;
-            }
-            
-            if (!proposalFile.files.length) {
-                alert('Harap upload file proposal!');
-                return;
-            }
-            
-            // Validasi tanggal
-            const tanggalMulai = new Date(document.getElementById('tanggalMulai').value);
-            const tanggalSelesai = new Date(document.getElementById('tanggalSelesai').value);
-            const today = new Date();
-            
-            if (tanggalMulai < today) {
-                alert('Tanggal mulai tidak boleh kurang dari hari ini!');
-                return;
-            }
-            
-            if (tanggalSelesai < tanggalMulai) {
-                alert('Tanggal selesai tidak boleh kurang dari tanggal mulai!');
-                return;
-            }
-            
-            // Validasi anggaran
-            const jumlahInputs = document.querySelectorAll('.jumlah-input');
-            let valid = true;
-            jumlahInputs.forEach(input => {
-                if (!input.value || parseFloat(input.value) <= 0) {
-                    valid = false;
-                }
-            });
-            
-            if (!valid) {
-                alert('Harap isi semua item anggaran dengan jumlah yang valid!');
-                return;
-            }
-            
-            if (confirm(`Apakah Anda yakin mengajukan proposal ini?\n\nJudul: ${judulProposal}\nTotal Anggaran: ${totalAnggaran}`)) {
-                alert('Proposal berhasil diajukan! Menunggu review dari Pembina UKM.');
-                
-                // Reset form
-                this.reset();
-                proposalFileName.textContent = '';
-                rabFileName.textContent = '';
-                document.querySelectorAll('.kegiatan-option').forEach(opt => {
-                    opt.classList.remove('selected');
-                });
-                
-                // Reset tabel anggaran
-                document.getElementById('anggaranBody').innerHTML = `
-                    <tr>
-                        <td>1</td>
-                        <td><input type="text" class="item-input" placeholder="Contoh: Honor Pembicara" required></td>
-                        <td><input type="text" class="keterangan-input" placeholder="Keterangan item" required></td>
-                        <td><input type="number" class="jumlah-input" placeholder="0" min="0" required></td>
-                        <td><button type="button" class="btn btn-danger btn-sm" onclick="hapusBaris(this)"><i class="fas fa-trash"></i></button></td>
-                    </tr>
-                `;
-                barisAnggaran = 1;
-                updateTotalAnggaran();
-                
-                // Set tanggal default
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                document.getElementById('tanggalMulai').valueAsDate = tomorrow;
-                document.getElementById('tanggalSelesai').valueAsDate = tomorrow;
-                
-                setTimeout(() => {
-                    alert('Proposal telah ditambahkan ke riwayat pengajuan. Anda akan mendapatkan notifikasi via email saat status berubah.');
-                }, 500);
-            }
-        });
-        
-        // Validasi tanggal selesai harus >= tanggal mulai
-        document.getElementById('tanggalMulai').addEventListener('change', function() {
-            const tanggalMulai = this.value;
-            document.getElementById('tanggalSelesai').min = tanggalMulai;
-            
-            if (document.getElementById('tanggalSelesai').value < tanggalMulai) {
-                document.getElementById('tanggalSelesai').value = tanggalMulai;
-            }
-        });
     </script>
 </body>
 </html>

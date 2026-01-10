@@ -4,17 +4,456 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verifikasi Transaksi - Sistem Transparansi Dana UKM</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Verifikasi Transaksi Specific Styles */
+        /* BASE STYLES (dari dashboard-admin.html) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: #f5f7fa;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: white;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .current-date {
+            font-size: 12px;
+            opacity: 0.8;
+            color: rgba(255,255,255,0.7) !important;
+            margin-top: 10px;
+        }
+        
+        .sidebar-nav ul {
+            list-style: none;
+        }
+        
+        .sidebar-nav li {
+            margin-bottom: 2px;
+        }
+        
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .sidebar-nav a:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .sidebar-nav a.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border-left: 4px solid #4fc3f7;
+        }
+        
+        .sidebar-nav i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-footer {
+            padding: 20px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .logout-btn i {
+            margin-right: 8px;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 20px;
+            width: calc(100% - 260px);
+            min-height: 100vh;
+            background: #f5f7fa;
+        }
+        
+        .top-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .user-name {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .user-role {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .page-title h1 {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+        
+        .page-title p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            margin: 0 2px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .card-header h3 {
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+        
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .card .card-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-success .card-icon {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+        
+        .card-warning .card-icon {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+        
+        .card-danger .card-icon {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .card-info .card-icon {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+        
+        .card-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .card-desc {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        /* Table Container */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .table-container h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            width: 100%;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+        
+        thead {
+            background: #f8f9fa;
+        }
+        
+        th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            white-space: nowrap;
+        }
+        
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        /* Status Badges */
+        .status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            .main-content {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                margin-bottom: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 15px;
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .user-info {
+                margin-bottom: 15px;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .page-title h1 {
+                font-size: 20px;
+            }
+            
+            .card {
+                padding: 16px;
+            }
+            
+            .card-value {
+                font-size: 24px;
+            }
+        }
+
+        /* PAGE SPECIFIC STYLES - Verifikasi Transaksi */
         .verification-tabs {
             display: flex;
             gap: 10px;
             margin-bottom: 30px;
             border-bottom: 2px solid #e0e0e0;
             padding-bottom: 10px;
+            overflow-x: auto;
         }
         
         .tab-btn {
@@ -26,6 +465,7 @@
             cursor: pointer;
             transition: all 0.3s;
             color: #666;
+            white-space: nowrap;
         }
         
         .tab-btn.active {
@@ -108,6 +548,11 @@
             margin-bottom: 25px;
         }
         
+        .transaction-documents h4 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
         .document-item {
             display: flex;
             align-items: center;
@@ -133,6 +578,7 @@
             display: flex;
             gap: 15px;
             margin-bottom: 30px;
+            flex-wrap: wrap;
         }
         
         .filter-options {
@@ -189,6 +635,29 @@
             font-size: 14px;
         }
         
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-check input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .ukm-name {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
         @media (max-width: 768px) {
             .verification-tabs {
                 flex-wrap: wrap;
@@ -196,24 +665,38 @@
             
             .tab-btn {
                 flex: 1;
-                min-width: 120px;
+                min-width: 140px;
+                text-align: center;
             }
             
-            .transaction-header {
+            .filter-options {
                 flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .verification-actions {
-                justify-content: flex-start;
             }
             
             .filter-group select,
             .filter-group input {
                 min-width: 100%;
             }
+            
+            .bulk-actions {
+                flex-direction: column;
+            }
+            
+            .bulk-actions .btn {
+                width: 100%;
+            }
+            
+            .verification-actions {
+                flex-direction: column;
+            }
+            
+            .verification-actions .btn {
+                width: 100%;
+            }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="dashboard-container">
@@ -284,38 +767,46 @@
             </div>
             
             <!-- Filter Options -->
-            <div class="filter-options">
-                <div class="filter-group">
-                    <label>Status:</label>
-                    <select id="filterStatus" onchange="filterTransactions()">
-                        <option value="all">Semua Status</option>
-                        <option value="pending">Menunggu Verifikasi</option>
-                        <option value="verified">Terverifikasi</option>
-                        <option value="rejected">Ditolak</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>UKM:</label>
-                    <select id="filterUKM" onchange="filterTransactions()">
-                        <option value="all">Semua UKM</option>
-                        <option value="u2m">UKM U2M</option>
-                        <option value="robotika">UKM Robotika</option>
-                        <option value="multimedia">UKM Multimedia</option>
-                        <option value="teater">UKM Teater</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Tanggal:</label>
-                    <input type="date" id="filterDate" onchange="filterTransactions()">
-                </div>
-                <div class="filter-group">
-                    <label>Jumlah:</label>
-                    <select id="filterAmount" onchange="filterTransactions()">
-                        <option value="all">Semua Jumlah</option>
-                        <option value="small">≤ Rp 1.000.000</option>
-                        <option value="medium">Rp 1-5 Juta</option>
-                        <option value="large">≥ Rp 5.000.000</option>
-                    </select>
+            <div class="table-container" style="margin-bottom: 20px;">
+                <h3>Filter Transaksi</h3>
+                <div class="filter-options">
+                    <div class="filter-group">
+                        <label>Status:</label>
+                        <select id="filterStatus">
+                            <option value="all">Semua Status</option>
+                            <option value="pending">Menunggu Verifikasi</option>
+                            <option value="verified">Terverifikasi</option>
+                            <option value="rejected">Ditolak</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>UKM:</label>
+                        <select id="filterUKM">
+                            <option value="all">Semua UKM</option>
+                            <option value="u2m">UKM U2M</option>
+                            <option value="robotika">UKM Robotika</option>
+                            <option value="multimedia">UKM Multimedia</option>
+                            <option value="teater">UKM Teater</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Tanggal:</label>
+                        <input type="date" id="filterDate">
+                    </div>
+                    <div class="filter-group">
+                        <label>Jumlah:</label>
+                        <select id="filterAmount">
+                            <option value="all">Semua Jumlah</option>
+                            <option value="small">≤ Rp 1.000.000</option>
+                            <option value="medium">Rp 1-5 Juta</option>
+                            <option value="large">≥ Rp 5.000.000</option>
+                        </select>
+                    </div>
+                    <div class="filter-group" style="align-self: flex-end;">
+                        <button class="btn btn-primary" id="applyFilterBtn">
+                            <i class="fas fa-filter"></i> Terapkan
+                        </button>
+                    </div>
                 </div>
             </div>
             
@@ -479,82 +970,17 @@
                         </button>
                     </div>
                 </div>
-                
-                <!-- Transaction 3 -->
-                <div class="transaction-card">
-                    <div class="transaction-header">
-                        <div>
-                            <div class="transaction-id">TRX-2024-0020</div>
-                            <div class="ukm-name">UKM Multimedia</div>
-                        </div>
-                        <div class="transaction-amount">Rp 2.300.000</div>
-                    </div>
-                    
-                    <div class="transaction-details">
-                        <div class="detail-item">
-                            <span class="detail-label">Tanggal Transaksi</span>
-                            <span class="detail-value">28 Januari 2024</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Jenis Pengeluaran</span>
-                            <span class="detail-value">Software Lisensi</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Kategori</span>
-                            <span class="detail-value">Aset Digital</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Diajukan Oleh</span>
-                            <span class="detail-value">Ketua UKM Multimedia</span>
-                        </div>
-                    </div>
-                    
-                    <div class="transaction-documents">
-                        <h4>Bukti Dokumen:</h4>
-                        <div class="document-item">
-                            <i class="fas fa-file-invoice document-icon"></i>
-                            <div>
-                                <div>Invoice Software.pdf</div>
-                                <small>1.5 MB • Diupload: 28 Jan 2024</small>
-                            </div>
-                            <button class="btn btn-sm btn-primary" onclick="viewDocument('software.pdf')">
-                                <i class="fas fa-eye"></i> Lihat
-                            </button>
-                        </div>
-                        <div class="document-item">
-                            <i class="fas fa-key document-icon"></i>
-                            <div>
-                                <div>Lisensi Key.txt</div>
-                                <small>2 KB • Diupload: 28 Jan 2024</small>
-                            </div>
-                            <button class="btn btn-sm btn-primary" onclick="viewDocument('key.txt')">
-                                <i class="fas fa-eye"></i> Lihat
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="verification-actions">
-                        <div class="form-check" style="margin-right: auto;">
-                            <input type="checkbox" class="transaction-check" id="trx3">
-                            <label for="trx3">Pilih untuk aksi bulk</label>
-                        </div>
-                        <button class="btn btn-success" onclick="verifyTransaction('TRX-2024-0020')">
-                            <i class="fas fa-check"></i> Verifikasi
-                        </button>
-                        <button class="btn btn-danger" onclick="rejectTransaction('TRX-2024-0020')">
-                            <i class="fas fa-times"></i> Tolak
-                        </button>
-                        <button class="btn btn-primary" onclick="requestRevision('TRX-2024-0020')">
-                            <i class="fas fa-edit"></i> Minta Revisi
-                        </button>
-                    </div>
-                </div>
             </div>
             
             <!-- Verified Transactions -->
             <div id="verified-tab" class="tab-content">
                 <div class="table-container">
-                    <h3>Transaksi Terverifikasi</h3>
+                    <div class="section-header">
+                        <h3>Transaksi Terverifikasi</h3>
+                        <button class="btn btn-primary" onclick="exportTransactions('verified')">
+                            <i class="fas fa-download"></i> Export Data
+                        </button>
+                    </div>
                     <div class="table-responsive">
                         <table>
                             <thead>
@@ -584,13 +1010,26 @@
                                 </tr>
                                 <tr>
                                     <td>TRX-2024-0010</td>
-                                    <td>UKM Robotika</td>
+                                    <td>UKM Multimedia</td>
                                     <td>Rp 1.200.000</td>
-                                    <td>Komponen</td>
+                                    <td>Perlengkapan</td>
                                     <td>26 Jan 2024</td>
                                     <td>Admin Keuangan</td>
                                     <td>
                                         <button class="btn btn-sm btn-info" onclick="viewTransaction('TRX-2024-0010')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>TRX-2024-0009</td>
+                                    <td>UKM Teater</td>
+                                    <td>Rp 750.000</td>
+                                    <td>Konsumsi</td>
+                                    <td>25 Jan 2024</td>
+                                    <td>Admin Keuangan</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" onclick="viewTransaction('TRX-2024-0009')">
                                             <i class="fas fa-eye"></i>
                                         </button>
                                     </td>
@@ -604,7 +1043,12 @@
             <!-- Rejected Transactions -->
             <div id="rejected-tab" class="tab-content">
                 <div class="table-container">
-                    <h3>Transaksi Ditolak</h3>
+                    <div class="section-header">
+                        <h3>Transaksi Ditolak</h3>
+                        <button class="btn btn-primary" onclick="exportTransactions('rejected')">
+                            <i class="fas fa-download"></i> Export Data
+                        </button>
+                    </div>
                     <div class="table-responsive">
                         <table>
                             <thead>
@@ -612,24 +1056,36 @@
                                     <th>ID Transaksi</th>
                                     <th>UKM</th>
                                     <th>Jumlah</th>
-                                    <th>Alasan Penolakan</th>
+                                    <th>Kategori</th>
                                     <th>Tanggal</th>
+                                    <th>Alasan Penolakan</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>TRX-2024-0008</td>
-                                    <td>UKM Teater</td>
+                                    <td>UKM Fotografi</td>
                                     <td>Rp 1.500.000</td>
-                                    <td>Dokumen tidak lengkap</td>
-                                    <td>25 Jan 2024</td>
+                                    <td>Perlengkapan</td>
+                                    <td>24 Jan 2024</td>
+                                    <td>Bukti transaksi tidak lengkap</td>
                                     <td>
                                         <button class="btn btn-sm btn-info" onclick="viewTransaction('TRX-2024-0008')">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-primary" onclick="reconsiderTransaction('TRX-2024-0008')">
-                                            <i class="fas fa-redo"></i>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>TRX-2024-0007</td>
+                                    <td>UKM Robotika</td>
+                                    <td>Rp 2.300.000</td>
+                                    <td>Komponen</td>
+                                    <td>23 Jan 2024</td>
+                                    <td>Melebihi anggaran yang disetujui</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" onclick="viewTransaction('TRX-2024-0007')">
+                                            <i class="fas fa-eye"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -642,9 +1098,9 @@
             <!-- All Transactions -->
             <div id="all-tab" class="tab-content">
                 <div class="table-container">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div class="section-header">
                         <h3>Semua Transaksi</h3>
-                        <button class="btn btn-primary" onclick="exportTransactions()">
+                        <button class="btn btn-primary" onclick="exportTransactions('all')">
                             <i class="fas fa-download"></i> Export Data
                         </button>
                     </div>
@@ -681,9 +1137,48 @@
                                     <td>Rp 450.000</td>
                                     <td>ATK</td>
                                     <td>27 Jan 2024</td>
-                                    <td><span class="status status-approved">Terverifikasi</span></td>
+                                    <td><span class="status status-approved">Disetujui</span></td>
                                     <td>
                                         <button class="btn btn-sm btn-info" onclick="viewTransaction('TRX-2024-0011')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>TRX-2024-0010</td>
+                                    <td>UKM Multimedia</td>
+                                    <td>Rp 1.200.000</td>
+                                    <td>Perlengkapan</td>
+                                    <td>26 Jan 2024</td>
+                                    <td><span class="status status-approved">Disetujui</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" onclick="viewTransaction('TRX-2024-0010')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>TRX-2024-0009</td>
+                                    <td>UKM Teater</td>
+                                    <td>Rp 750.000</td>
+                                    <td>Konsumsi</td>
+                                    <td>25 Jan 2024</td>
+                                    <td><span class="status status-approved">Disetujui</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" onclick="viewTransaction('TRX-2024-0009')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>TRX-2024-0008</td>
+                                    <td>UKM Fotografi</td>
+                                    <td>Rp 1.500.000</td>
+                                    <td>Perlengkapan</td>
+                                    <td>24 Jan 2024</td>
+                                    <td><span class="status status-rejected">Ditolak</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" onclick="viewTransaction('TRX-2024-0008')">
                                             <i class="fas fa-eye"></i>
                                         </button>
                                     </td>
@@ -691,12 +1186,26 @@
                             </tbody>
                         </table>
                     </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                        <div style="font-size: 14px; color: #666;">
+                            Menampilkan 1-5 dari 188 transaksi
+                        </div>
+                        <div class="pagination">
+                            <button class="btn btn-secondary btn-sm" disabled>
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span style="margin: 0 10px;">Halaman 1 dari 38</span>
+                            <button class="btn btn-secondary btn-sm">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
     
-    <script src="script.js"></script>
     <script>
         // Set current date
         document.querySelector('.current-date').textContent = new Date().toLocaleDateString('id-ID', {
@@ -705,6 +1214,9 @@
             month: 'long',
             day: 'numeric'
         });
+        
+        // Set today's date as default filter
+        document.getElementById('filterDate').valueAsDate = new Date();
         
         // Tab functionality
         function showTab(tabName) {
@@ -726,21 +1238,33 @@
         }
         
         // Filter transactions
-        function filterTransactions() {
+        document.getElementById('applyFilterBtn').addEventListener('click', function() {
             const status = document.getElementById('filterStatus').value;
             const ukm = document.getElementById('filterUKM').value;
             const date = document.getElementById('filterDate').value;
             const amount = document.getElementById('filterAmount').value;
             
-            alert(`Filter diterapkan:\nStatus: ${status}\nUKM: ${ukm}\nTanggal: ${date}\nJumlah: ${amount}`);
-            // Implement actual filtering logic
-        }
+            // Show loading indicator
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+            this.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                alert(`Filter diterapkan:\nStatus: ${status}\nUKM: ${ukm}\nTanggal: ${date}\nJumlah: ${amount}`);
+                
+                // Reset button
+                this.innerHTML = '<i class="fas fa-filter"></i> Terapkan';
+                this.disabled = false;
+            }, 500);
+        });
         
         // Transaction actions
         function verifyTransaction(trxId) {
             if (confirm(`Verifikasi transaksi ${trxId}?`)) {
+                // Show loading
                 alert(`Transaksi ${trxId} berhasil diverifikasi`);
-                // Implement verification logic
+                // In real app, you would make an API call here
             }
         }
         
@@ -748,7 +1272,7 @@
             const reason = prompt('Masukkan alasan penolakan:');
             if (reason) {
                 alert(`Transaksi ${trxId} ditolak: ${reason}`);
-                // Implement rejection logic
+                // In real app, you would make an API call here
             }
         }
         
@@ -756,25 +1280,18 @@
             const note = prompt('Masukkan catatan revisi:');
             if (note) {
                 alert(`Revisi diminta untuk transaksi ${trxId}: ${note}`);
-                // Implement revision request logic
+                // In real app, you would make an API call here
             }
         }
         
         function viewDocument(docName) {
             alert(`Membuka dokumen: ${docName}`);
-            // Implement document viewer
+            // In real app, you would open the document in a modal or new tab
         }
         
         function viewTransaction(trxId) {
             alert(`Melihat detail transaksi ${trxId}`);
-            // Implement transaction detail view
-        }
-        
-        function reconsiderTransaction(trxId) {
-            if (confirm(`Pertimbangkan ulang transaksi ${trxId}?`)) {
-                alert(`Transaksi ${trxId} akan ditinjau ulang`);
-                // Implement reconsider logic
-            }
+            // In real app, you would show detailed view in a modal
         }
         
         // Bulk actions
@@ -787,7 +1304,7 @@
             
             if (confirm(`Verifikasi ${selected.length} transaksi terpilih?`)) {
                 alert(`${selected.length} transaksi berhasil diverifikasi`);
-                // Implement bulk verification
+                // In real app, you would make an API call here
             }
         }
         
@@ -801,7 +1318,7 @@
             const reason = prompt('Masukkan alasan penolakan untuk semua transaksi:');
             if (reason) {
                 alert(`${selected.length} transaksi ditolak: ${reason}`);
-                // Implement bulk rejection
+                // In real app, you would make an API call here
             }
         }
         
@@ -813,13 +1330,40 @@
         }
         
         // Export transactions
-        function exportTransactions() {
-            alert('Data transaksi akan diexport ke Excel');
-            // Implement export logic
+        function exportTransactions(type) {
+            const typeName = type === 'verified' ? 'terverifikasi' : 
+                           type === 'rejected' ? 'ditolak' : 'semua';
+            alert(`Data transaksi ${typeName} akan diexport ke Excel`);
+            // In real app, you would trigger file download
         }
         
-        // Initialize
-        document.getElementById('filterDate').valueAsDate = new Date();
+        // Initialize tab content visibility
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show pending tab by default
+            showTab('pending');
+        });
+        // Fungsi logout sederhana
+function logoutUser() {
+    if (confirm('Apakah Anda yakin ingin logout?')) {
+        // Hapus data sesi
+        localStorage.removeItem('user');
+        localStorage.removeItem('loginTime');
+        
+        // Redirect ke halaman login
+        window.location.href = 'index.html';
+    }
+}
+
+// Atur event listener untuk tombol logout
+document.addEventListener('DOMContentLoaded', function() {
+    const logoutBtn = document.querySelector('.logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            logoutUser();
+        });
+    }
+});
     </script>
 </body>
 </html>
